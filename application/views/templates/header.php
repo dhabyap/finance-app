@@ -23,7 +23,12 @@
             <div class="container-fluid p-0 d-flex justify-content-between align-items-center">
                 <span class="navbar-brand mb-0 h1 fw-bold font-mono text-uppercase tracking-wider">My Wallet</span>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-pastel-yellow text-black border border-black rounded-0">
+                    <?php if ($this->session->userdata('role') === 'admin'): ?>
+                        <a href="<?= base_url('admin') ?>" class="btn btn-sm btn-dark border-brutal rounded-0 fw-bold px-3">
+                            ADMIN
+                        </a>
+                    <?php endif; ?>
+                    <span class="badge bg-pastel-yellow text-black border border-black rounded-0 fw-bold">
                         <?= $this->session->userdata('name'); ?>
                     </span>
                     <a href="<?= base_url('auth/logout') ?>" class="btn btn-sm border-0">
