@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+.font-mono {
+    font-family: 'Space Mono', monospace;
+}
+
+/* Neubrutalism Utils */
+.border-brutal {
+    border: 2px solid #000 !important;
+}
+
+.shadow-brutal {
+    box-shadow: 4px 4px 0px 0px #000 !important;
+}
+
+.shadow-brutal-sm {
+    box-shadow: 2px 2px 0px 0px #000 !important;
+}
+
+.shadow-brutal-lg {
+    box-shadow: 8px 8px 0px 0px #000 !important;
+}
+
+/* Button Styles */
+.btn-brutal {
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0px 0px #000;
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    border-radius: 0; 
+}
+
+.btn-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #000;
+}
+
+.btn-brutal:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px #000 !important;
+}
+
+.btn-primary-brutal {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn-secondary-brutal {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Input Styles */
+.form-control-brutal {
+    border: 2px solid #000;
+    border-radius: 0;
+    padding: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.form-control-brutal:focus {
+    box-shadow: 4px 4px 0px 0px #000;
+    border-color: #000;
+    background-color: #f0fdf4;
+}
+
+/* Card Styles */
+.card-brutal {
+    border: 2px solid #000;
+    border-radius: 0;
+    box-shadow: 4px 4px 0px 0px #000;
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.card-brutal:hover {
+    transform: translateY(-2px);
+}
+
+/* Utility Colors */
+.bg-pastel-blue { background-color: #bfdbfe; }
+.bg-pastel-green { background-color: #dcfce7; }
+.bg-pastel-yellow { background-color: #fef9c3; }
+.bg-pastel-red { background-color: #fee2e2; }
+
+
+/* Mobile Navbar */
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border-top: 2px solid #000;
+    border-left: 2px solid #000;
+    border-right: 2px solid #000;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+/* PLUS BUTTON */
+.nav-plus {
+    flex: 0;
+    width: 64px;
+    display: flex;
+    justify-content: center;
+}
+
+.plus-btn {
+    width: 52px;
+    height: 52px;
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0px 0px #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-16px); /* floating cantik */
+    transition: all 0.1s ease;
+}
+
+.plus-btn:hover {
+    transform: translateY(-18px);
+}
+
+.plus-btn:active {
+    transform: translateY(-12px);
+    box-shadow: 0px 0px 0px 0px #000;
+}
+
+.plus-btn .iconify {
+    font-size: 28px;
+}
+
+@media (max-width: 480px) {
+    .mobile-nav {
+        border-left: none;
+        border-right: none;
+    }
+}
+
+.nav-item-brutal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #9ca3af;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.nav-item-brutal.active {
+    color: #000;
+}
+
+.nav-item-brutal svg {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+}
+
+/* Container for Mobile App View */
+.app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    border-left: 2px solid #000;
+    border-right: 2px solid #000;
+    padding-bottom: 80px; /* Space for nav */
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        border: none;
+    }
+}
