@@ -41,8 +41,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Iconify -->
 <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<!-- Swup (Page Transitions) -->
+<script src="https://unpkg.com/swup@4"></script>
 <script>
-    // Add active class handling if needed via JS, though PHP handles it mostly
+    const swup = new Swup();
+
+    // Re-initialize scripts after page transition
+    swup.hooks.on('content:replace', () => {
+        // Re-run Iconify icons scan
+        if (typeof Iconify !== 'undefined') {
+            Iconify.scan();
+        }
+    });
 </script>
 </body>
 

@@ -32,4 +32,4 @@
                 </div>
             </div>
         </nav>
-        <div class="content p-3 pb-5 mb-5">
+        <div id="swup" class="content p-3 pb-5 mb-5 transition-fade">
