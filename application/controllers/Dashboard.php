@@ -104,6 +104,10 @@ class Dashboard extends CI_Controller
         // So the dropdown will populate values as Names.
 
         if ($this->form_validation->run() == FALSE) {
+            if ($this->input->is_ajax_request()) {
+                echo json_encode(['status' => 'error', 'message' => validation_errors()]);
+                return;
+            }
             $user_id = $this->session->userdata('user_id');
             // get categories for dropdown
             // Using get_categories_by_user to support both global and user specific
@@ -122,6 +126,12 @@ class Dashboard extends CI_Controller
                 'transaction_date' => $this->input->post('date')
             ];
             $this->Transaction_model->add_transaction($data);
+
+            if ($this->input->is_ajax_request()) {
+                echo json_encode(['status' => 'success', 'message' => 'Transaction added successfully!']);
+                return;
+            }
+
             $this->session->set_flashdata('message', '<div class="alert alert-success border-brutal bg-pastel-green text-black" role="alert">Transaction added!</div>');
             redirect('dashboard/transactions');
         }

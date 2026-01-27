@@ -2,7 +2,8 @@
     <h4 class="font-mono fw-bold mb-4">ADD TRANSACTION</h4>
 
     <div class="card card-brutal p-4">
-        <form action="<?= base_url('dashboard/add') ?>" method="post">
+        <div id="ajax-message"></div>
+        <form id="addTransactionForm" action="<?= base_url('dashboard/add') ?>" method="post">
             <div class="mb-3">
                 <label class="form-label font-mono fw-bold">TYPE</label>
                 <div class="d-flex gap-3">
@@ -53,9 +54,45 @@
                     required>
             </div>
 
-            <button type="submit" class="btn btn-brutal btn-primary-brutal w-100 py-3 fw-bold">
+            <button type="submit" id="btnSave" class="btn btn-brutal btn-primary-brutal w-100 py-3 fw-bold">
                 SAVE TRANSACTION
             </button>
         </form>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#addTransactionForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const $btn = $('#btnSave');
+            const $msg = $('#ajax-message');
+            const originalBtnText = $btn.text();
+
+            $btn.prop('disabled', true).text('SAVING...');
+            $msg.html('');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 'success') {
+                        $msg.html('<div class="alert alert-success border-brutal bg-pastel-green mb-3">' + response.message + '</div>');
+                        $('#addTransactionForm')[0].reset();
+                    } else {
+                        $msg.html('<div class="alert alert-danger border-brutal mb-3">' + response.message + '</div>');
+                    }
+                },
+                error: function () {
+                    $msg.html('<div class="alert alert-danger border-brutal mb-3">Something went wrong. Please try again.</div>');
+                },
+                complete: function () {
+                    $btn.prop('disabled', false).text(originalBtnText);
+                }
+            });
+        });
+    });
+</script>
