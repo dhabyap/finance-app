@@ -17,17 +17,18 @@
         <table class="table table-hover mb-0">
             <thead class="bg-gray-100 border-bottom border-black">
                 <tr>
-                    <th class="p-3 font-mono small fw-bold">ID</th>
+                    <th class="p-3 font-mono small fw-bold">NO</th>
                     <th class="p-3 font-mono small fw-bold">NAME</th>
                     <th class="p-3 font-mono small fw-bold">TYPE</th>
-                    <th class="p-3 font-mono small fw-bold">OWNER</th>
+                    <!-- <th class="p-3 font-mono small fw-bold">OWNER</th> -->
                     <th class="p-3 font-mono small fw-bold text-end">ACTIONS</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($categories as $cat): ?>
+                <?php $no = 1;
+                foreach ($categories as $cat): ?>
                     <tr class="align-middle">
-                        <td class="p-3 fw-bold"><?= $cat['id'] ?></td>
+                        <td class="p-3 fw-bold"><?= $no ?></td>
                         <td class="p-3"><?= $cat['name'] ?></td>
                         <td class="p-3">
                             <?php if ($cat['type'] == 'income'): ?>
@@ -38,14 +39,14 @@
                                     class="badge bg-pastel-red text-black border border-black rounded-0 text-uppercase">EXPENSE</span>
                             <?php endif; ?>
                         </td>
-                        <td class="p-3">
+                        <!-- <td class="p-3">
                             <?php if (!$cat['user_id']): ?>
                                 <span class="badge bg-dark text-white rounded-0">GLOBAL</span>
                             <?php else: ?>
                                 <span class="badge border border-black text-black rounded-0 small">USER
                                     #<?= $cat['user_id'] ?></span>
                             <?php endif; ?>
-                        </td>
+                        </td> -->
                         <td class="p-3 text-end">
                             <?php if (!$cat['user_id']): ?>
                                 <button class="btn btn-sm btn-outline-dark border-brutal rounded-0 fw-bold me-1 edit-cat-btn"
@@ -61,7 +62,9 @@
                             <?php endif; ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                    <?php
+                    $no++;
+                endforeach; ?>
             </tbody>
         </table>
     </div>

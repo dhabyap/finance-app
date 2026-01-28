@@ -23,7 +23,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/finance_app/';
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+    || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+$script = $_SERVER['SCRIPT_NAME'] ?? '';
+$path = str_replace(basename($script), '', $script);
+
+$config['base_url'] = $protocol . $host . $path;
 
 /*
 |--------------------------------------------------------------------------

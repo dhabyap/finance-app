@@ -24,7 +24,8 @@
                 <span class="navbar-brand mb-0 h1 fw-bold font-mono text-uppercase tracking-wider">My Wallet</span>
                 <div class="d-flex align-items-center gap-2">
                     <?php if ($this->session->userdata('role') === 'admin'): ?>
-                        <a href="<?= base_url('admin') ?>" class="btn btn-sm btn-dark border-brutal rounded-0 fw-bold px-3">
+                        <a href="<?= base_url('admin') ?>" class="btn btn-sm btn-dark border-brutal rounded-0 fw-bold px-3"
+                            data-no-swup>
                             ADMIN
                         </a>
                     <?php endif; ?>

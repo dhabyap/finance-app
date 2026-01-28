@@ -136,17 +136,21 @@
                 z-index: 2000 !important;
                 box-shadow: none !important;
             }
+
             .admin-sidebar.show-mobile {
                 transform: translateX(0);
-                box-shadow: 10px 0px 50px rgba(0,0,0,0.3) !important;
+                box-shadow: 10px 0px 50px rgba(0, 0, 0, 0.3) !important;
             }
+
             .admin-main {
                 padding: 1.5rem !important;
                 width: 100% !important;
             }
+
             .admin-layout {
                 flex-direction: column;
             }
+
             /* Overlay Backdrop */
             .sidebar-overlay {
                 display: none;
@@ -155,10 +159,11 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0,0,0,0.5);
+                background: rgba(0, 0, 0, 0.5);
                 z-index: 1999;
                 backdrop-filter: blur(2px);
             }
+
             .sidebar-overlay.show {
                 display: block;
             }
@@ -195,17 +200,27 @@
                 </div>
 
                 <div class="admin-sidebar-footer">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <span class="badge bg-pastel-yellow text-black border-2 border-dark rounded-0 fw-bold px-3 py-2">
-                            <?= $this->session->userdata('username'); ?>
-                        </span>
+                    <div class="d-flex align-items-center gap-3 mb-4 p-2 border border-2 border-dark bg-white shadow-sm">
+                        <div
+                            class="bg-pastel-yellow border border-2 border-dark p-2 d-flex align-items-center justify-content-center">
+                            <span class="iconify" data-icon="lucide:user" data-width="20"></span>
+                        </div>
+                        <div class="overflow-hidden">
+                            <small class="d-block text-muted fw-bold font-mono"
+                                style="font-size: 0.65rem; line-height: 1;">ADMIN SESSION</small>
+                            <span class="d-block fw-bold text-uppercase text-truncate font-mono"
+                                style="font-size: 0.85rem;">
+                                <?= $this->session->userdata('username'); ?>
+                            </span>
+                        </div>
                     </div>
                     <div class="d-grid gap-2">
-                        <a href="<?= base_url('dashboard') ?>"
+                        <!-- <a href="<?= base_url('dashboard') ?>"
                             class="btn btn-outline-dark border-brutal rounded-0 fw-bold py-2">
                             APP VIEW
-                        </a>
-                        <a href="<?= base_url('admin/logout') ?>" class="btn btn-dark border-brutal rounded-0 fw-bold py-2">
+                        </a> -->
+                        <a href="<?= base_url('admin/logout') ?>" class="btn btn-dark border-brutal rounded-0 fw-bold py-2"
+                            data-no-swup>
                             LOGOUT
                         </a>
                     </div>

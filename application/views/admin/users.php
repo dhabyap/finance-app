@@ -10,7 +10,7 @@
         <table class="table table-hover mb-0">
             <thead class="bg-gray-100 border-bottom border-black">
                 <tr>
-                    <th class="p-3 font-mono small fw-bold">ID</th>
+                    <th class="p-3 font-mono small fw-bold">NO</th>
                     <th class="p-3 font-mono small fw-bold">NAME</th>
                     <th class="p-3 font-mono small fw-bold">USERNAME</th>
                     <th class="p-3 font-mono small fw-bold">ROLE</th>
@@ -18,9 +18,10 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($users as $user): ?>
+                <?php $no = 1;
+                foreach ($users as $user): ?>
                     <tr class="align-middle">
-                        <td class="p-3 fw-bold"><?= $user['id'] ?></td>
+                        <td class="p-3 fw-bold"><?= $no ?></td>
                         <td class="p-3"><?= $user['name'] ?></td>
                         <td class="p-3"><span
                                 class="badge bg-pastel-blue text-black border border-black rounded-0"><?= $user['username'] ?></span>
@@ -34,7 +35,9 @@
                         </td>
                         <td class="p-3 small"><?= date('d M Y, H:i', strtotime($user['created_at'])) ?></td>
                     </tr>
-                <?php endforeach; ?>
+                    <?php
+                    $no++;
+                endforeach; ?>
             </tbody>
         </table>
     </div>
