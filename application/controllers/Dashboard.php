@@ -66,11 +66,36 @@ class Dashboard extends CI_Controller
     public function transactions()
     {
         $user_id = $this->session->userdata('user_id');
-        $data['transactions'] = $this->Transaction_model->get_transactions($user_id);
+        $limit = 20;
+        $offset = $this->input->get('offset') ? $this->input->get('offset') : 0;
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('dashboard/transactions', $data);
-        $this->load->view('templates/main_footer');
+        $month = $this->input->get('month');
+        $year = $this->input->get('year');
+
+        // If month is selected but year is not, default to current year to avoid mixing years
+        if (!empty($month) && empty($year)) {
+            $year = date('Y');
+        }
+
+        $filter = [
+            'date' => $this->input->get('date'),
+            'month' => $month,
+            'year' => $year,
+        ];
+
+        $data['transactions'] = $this->Transaction_model->get_transactions($user_id, $limit, $filter, $offset);
+        $data['filter'] = $filter;
+        $data['offset'] = $offset;
+        $data['limit'] = $limit;
+
+        if ($this->input->is_ajax_request()) {
+            // Return only the list items for AJAX "Load More"
+            $this->load->view('dashboard/transaction_list_partial', $data);
+        } else {
+            $this->load->view('templates/header', $data);
+            $this->load->view('dashboard/transactions', $data);
+            $this->load->view('templates/main_footer');
+        }
     }
 
     public function detail($id = null)
@@ -117,12 +142,21 @@ class Dashboard extends CI_Controller
             $this->load->view('dashboard/add', $data);
             $this->load->view('templates/main_footer');
         } else {
+            $user_id = $this->session->userdata('user_id');
+            $type = $this->input->post('type');
+            $cat_name = $this->input->post('category');
+
+            // Auto-create category if needed
+            $final_category = $this->Transaction_model->get_or_create_category($cat_name, $type, $user_id);
+
             $data = [
-                'user_id' => $this->session->userdata('user_id'),
+                'user_id' => $user_id,
                 'title' => $this->input->post('title'),
                 'amount' => $this->input->post('amount'),
-                'type' => $this->input->post('type'),
-                'category' => $this->input->post('category'), // This will be the name string from select value
+                'type' => $type,
+                'category' => $final_category,
+                'payee' => $this->input->post('payee'),
+                'description' => $this->input->post('description'),
                 'transaction_date' => $this->input->post('date')
             ];
             $this->Transaction_model->add_transaction($data);
@@ -152,11 +186,15 @@ class Dashboard extends CI_Controller
     public function stats()
     {
         $user_id = $this->session->userdata('user_id');
+
         $data['total_income'] = $this->Transaction_model->get_total_income($user_id);
         $data['total_expense'] = $this->Transaction_model->get_total_expense($user_id);
+        $data['category_expense'] = $this->Transaction_model->expense_by_category($user_id);
+        $data['category_income'] = $this->Transaction_model->income_by_category($user_id);
 
         $this->load->view('templates/header');
         $this->load->view('dashboard/stats', $data);
         $this->load->view('templates/main_footer');
     }
+
 }

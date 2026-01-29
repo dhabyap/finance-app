@@ -32,6 +32,9 @@ $script = $_SERVER['SCRIPT_NAME'] ?? '';
 $path = str_replace(basename($script), '', $script);
 
 $config['base_url'] = $protocol . $host . $path;
+// $config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http");
+// $config['base_url'] .= "://".$_SERVER['HTTP_HOST']."/finance_app/";
+
 
 /*
 |--------------------------------------------------------------------------
@@ -146,7 +149,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = 'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------

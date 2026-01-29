@@ -57,8 +57,14 @@
                             </div>
                             <div>
                                 <h6 class="fw-bold mb-0 text-truncate" style="max-width: 150px;"><?= $t['title'] ?></h6>
-                                <small class="text-muted font-mono"
-                                    style="font-size: 0.7rem;"><?= date('d M Y', strtotime($t['transaction_date'])) ?></small>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted font-mono"
+                                        style="font-size: 0.7rem;"><?= date('d M Y', strtotime($t['transaction_date'])) ?></small>
+                                    <?php if ($t['payee']): ?>
+                                        <small class="bg-dark text-white font-mono px-1"
+                                            style="font-size: 0.6rem;"><?= strtoupper($t['payee']) ?></small>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                         <div class="text-end">

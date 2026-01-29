@@ -13,6 +13,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
         rel="stylesheet">
+    <!-- jQuery (Loaded early for view scripts) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body class="bg-gray-50">
@@ -39,3 +41,49 @@
             </div>
         </nav>
         <div id="swup" class="content p-3 pb-5 mb-5 transition-fade">
+
+            <!-- Loader Overlay -->
+            <div id="loader-overlay"
+                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                <div class="card card-brutal p-4 bg-pastel-yellow text-center animate-bounce-custom">
+                    <span class="iconify mb-3 animate-spin-custom" data-icon="lucide:loader-2" data-width="48"></span>
+                    <h4 class="font-mono fw-bold">PROCESSING DATA...</h4>
+                    <p class="font-mono small text-muted mb-0">Please wait while we crunch the numbers.</p>
+                </div>
+            </div>
+
+            <style>
+                @keyframes bounce-custom {
+
+                    0%,
+                    100% {
+                        transform: translateY(0);
+                    }
+
+                    50% {
+                        transform: translateY(-10px);
+                    }
+                }
+
+                @keyframes spin-custom {
+                    from {
+                        transform: rotate(0deg);
+                    }
+
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                .animate-spin-custom {
+                    animation: spin-custom 1s linear infinite;
+                }
+
+                .animate-bounce-custom {
+                    animation: bounce-custom 1.5s infinite ease-in-out;
+                }
+
+                #loader-overlay.active {
+                    display: flex !important;
+                }
+            </style>

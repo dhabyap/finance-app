@@ -10,14 +10,29 @@ class Transaction_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_transactions($user_id, $limit = null)
+    public function get_transactions($user_id, $limit = null, $filter = [], $offset = 0)
     {
         $this->db->where('user_id', $user_id);
+
+        if (!empty($filter['date'])) {
+            $this->db->where('transaction_date', $filter['date']);
+        }
+
+        if (!empty($filter['month'])) {
+            $this->db->where('MONTH(transaction_date)', $filter['month']);
+        }
+
+        if (!empty($filter['year'])) {
+            $this->db->where('YEAR(transaction_date)', $filter['year']);
+        }
+
         $this->db->order_by('transaction_date', 'DESC');
         $this->db->order_by('created_at', 'DESC');
+
         if ($limit) {
-            $this->db->limit($limit);
+            $this->db->limit($limit, $offset);
         }
+
         return $this->db->get('transactions')->result_array();
     }
 
@@ -61,6 +76,24 @@ class Transaction_model extends CI_Model
         return ($result && isset($result->amount)) ? $result->amount : 0;
     }
 
+    public function expense_by_category($user_id)
+    {
+        $this->db->select('category, SUM(amount) as total');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('type', 'expense');
+        $this->db->group_by('category');
+        return $this->db->get('transactions')->result();
+    }
+    public function income_by_category($user_id)
+    {
+        $this->db->select('category, SUM(amount) as total');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('type', 'income');
+        $this->db->group_by('category');
+        return $this->db->get('transactions')->result();
+    }
+    
+
     // Dynamic Categories
     public function get_categories($type = null)
     {
@@ -94,5 +127,39 @@ class Transaction_model extends CI_Model
     public function get_category($id)
     {
         return $this->db->get_where('categories', ['id' => $id])->row_array();
+    }
+
+    public function add_batch_transactions($data)
+    {
+        return $this->db->insert_batch('transactions', $data);
+    }
+
+    /**
+     * Finds a category by name and type for a user, or creates it if it doesn't exist.
+     */
+    public function get_or_create_category($name, $type, $user_id)
+    {
+        $name = trim($name);
+        // Check if category exists (Global or User Specific)
+        $this->db->group_start();
+        $this->db->where('user_id', NULL);
+        $this->db->or_where('user_id', $user_id);
+        $this->db->group_end();
+        $this->db->where('LOWER(name)', strtolower($name));
+        $this->db->where('type', $type);
+        $category = $this->db->get('categories')->row_array();
+
+        if ($category) {
+            return $category['name']; // Returning name because transactions table stores name
+        }
+
+        // Create new category as User Specific
+        $new_category = [
+            'name' => $name,
+            'type' => $type,
+            'user_id' => $user_id
+        ];
+        $this->db->insert('categories', $new_category);
+        return $name;
     }
 }
