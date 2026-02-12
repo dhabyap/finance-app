@@ -58,41 +58,73 @@ class Transaction_model extends CI_Model
         return $this->db->delete('transactions');
     }
 
-    public function get_total_income($user_id)
+    public function get_total_income($user_id, $filter = [])
     {
         $this->db->select_sum('amount');
         $this->db->where('user_id', $user_id);
         $this->db->where('type', 'income');
+
+        if (!empty($filter['month'])) {
+            $this->db->where('MONTH(transaction_date)', $filter['month']);
+        }
+        if (!empty($filter['year'])) {
+            $this->db->where('YEAR(transaction_date)', $filter['year']);
+        }
+
         $result = $this->db->get('transactions')->row();
         return ($result && isset($result->amount)) ? $result->amount : 0;
     }
 
-    public function get_total_expense($user_id)
+    public function get_total_expense($user_id, $filter = [])
     {
         $this->db->select_sum('amount');
         $this->db->where('user_id', $user_id);
         $this->db->where('type', 'expense');
+
+        if (!empty($filter['month'])) {
+            $this->db->where('MONTH(transaction_date)', $filter['month']);
+        }
+        if (!empty($filter['year'])) {
+            $this->db->where('YEAR(transaction_date)', $filter['year']);
+        }
+
         $result = $this->db->get('transactions')->row();
         return ($result && isset($result->amount)) ? $result->amount : 0;
     }
 
-    public function expense_by_category($user_id)
+    public function expense_by_category($user_id, $filter = [])
     {
         $this->db->select('category, SUM(amount) as total');
         $this->db->where('user_id', $user_id);
         $this->db->where('type', 'expense');
+
+        if (!empty($filter['month'])) {
+            $this->db->where('MONTH(transaction_date)', $filter['month']);
+        }
+        if (!empty($filter['year'])) {
+            $this->db->where('YEAR(transaction_date)', $filter['year']);
+        }
+
         $this->db->group_by('category');
         return $this->db->get('transactions')->result();
     }
-    public function income_by_category($user_id)
+    public function income_by_category($user_id, $filter = [])
     {
         $this->db->select('category, SUM(amount) as total');
         $this->db->where('user_id', $user_id);
         $this->db->where('type', 'income');
+
+        if (!empty($filter['month'])) {
+            $this->db->where('MONTH(transaction_date)', $filter['month']);
+        }
+        if (!empty($filter['year'])) {
+            $this->db->where('YEAR(transaction_date)', $filter['year']);
+        }
+
         $this->db->group_by('category');
         return $this->db->get('transactions')->result();
     }
-    
+
 
     // Dynamic Categories
     public function get_categories($type = null)
@@ -161,5 +193,19 @@ class Transaction_model extends CI_Model
         ];
         $this->db->insert('categories', $new_category);
         return $name;
+    }
+
+    public function get_monthly_summary($user_id, $limit = 6)
+    {
+        $this->db->select("
+            DATE_FORMAT(transaction_date, '%Y-%m') as month_year,
+            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income,
+            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense
+        ");
+        $this->db->where('user_id', $user_id);
+        $this->db->group_by("DATE_FORMAT(transaction_date, '%Y-%m')");
+        $this->db->order_by('month_year', 'DESC');
+        $this->db->limit($limit);
+        return $this->db->get('transactions')->result_array();
     }
 }

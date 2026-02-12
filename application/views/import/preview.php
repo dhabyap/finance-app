@@ -25,7 +25,6 @@
                             <th class="p-3 border-0">AMOUNT</th>
                             <th class="p-3 border-0">TYPE</th>
                             <th class="p-3 border-0">CATEGORY</th>
-                            <th class="p-3 border-0">DESCRIPTION</th>
                             <th class="p-3 border-0 text-center">ACTION</th>
                         </tr>
                     </thead>
@@ -62,13 +61,7 @@
                                     <input type="hidden" name="categories[]"
                                         value="<?= htmlspecialchars($t['category']) ?>">
                                 </td>
-                                <td class="p-3 border-bottom">
-                                    <small class="text-muted d-block text-truncate" style="max-width: 150px;">
-                                        <?= $t['description'] ? htmlspecialchars($t['description']) : '-' ?>
-                                    </small>
-                                    <input type="hidden" name="descriptions[]"
-                                        value="<?= htmlspecialchars($t['description']) ?>">
-                                </td>
+                                <!-- Description removed -->
                                 <td class="p-3 border-bottom text-center">
                                     <button type="button"
                                         class="btn btn-sm btn-outline-danger border-2 border-dark rounded-0 remove-row">

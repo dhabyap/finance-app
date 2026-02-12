@@ -40,15 +40,7 @@
                         <?php endfor; ?>
                     </select>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <label class="form-label fw-bold font-mono small">DESCRIPTION (Optional)</label>
-                    <select name="col_description" class="form-select form-control-brutal">
-                        <option value="">-- No Column --</option>
-                        <?php for ($i = 0; $i < $total_cols; $i++): ?>
-                            <option value="<?= $i ?>">Column <?= $i + 1 ?></option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
+                <!-- Description removed as per user request -->
                 <div class="col-md-6 col-lg-3">
                     <label class="form-label fw-bold font-mono small">PAYEE/RECEIVER (Optional)</label>
                     <select name="col_payee" class="form-select form-control-brutal">

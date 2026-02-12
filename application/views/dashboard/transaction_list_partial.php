@@ -24,11 +24,6 @@
                                 <small class="font-mono text-muted">To: <?= htmlspecialchars($t['payee']) ?></small>
                             <?php endif; ?>
                         </div>
-                        <?php if ($t['description']): ?>
-                            <div class="mt-1">
-                                <small class="font-mono text-muted italic">"<?= htmlspecialchars($t['description']) ?>"</small>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>

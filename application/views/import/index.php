@@ -8,7 +8,7 @@
     <!-- Choice Card -->
     <div class="row g-3 mb-4">
         <div class="col-6">
-            <a href="<?= base_url('dashboard/add') ?>" class="text-decoration-none text-black">
+            <a href="<?= base_url('dashboard/add') ?>" class="text-decoration-none text-black" data-no-swup>
                 <div class="card card-brutal bg-white h-100 p-3 text-center hover-lift">
                     <span class="iconify mb-1" data-icon="lucide:keyboard" data-width="24"></span>
                     <small class="d-block font-mono fw-bold">MANUAL</small>
@@ -65,9 +65,48 @@
 
         // Trigger upload on file selection
         $('#fileInput').on('change', function () {
-            if ($(this).val()) {
+            const file = this.files[0];
+            if (file) {
+                // Validate file size (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File is too large! Maximum size is 2MB.');
+                    $(this).val('');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Show loader
                 $('#loader-overlay').addClass('active');
-                $('#uploadForm').submit();
+
+                $.ajax({
+                    url: '<?= base_url('import/upload') ?>',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            window.location.href = response.redirect_url;
+                        } else {
+                            $('#loader-overlay').removeClass('active');
+                            // Show error alert
+                            const errorHtml = `<div class="alert alert-danger border-brutal alert-dismissible fade show" role="alert">
+                                ${response.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>`;
+                            $('.animate-up').prepend(errorHtml);
+                            $('#fileInput').val('');
+                        }
+                    },
+                    error: function () {
+                        $('#loader-overlay').removeClass('active');
+                        alert('Something went wrong during upload. Please try again.');
+                        $('#fileInput').val('');
+                    }
+                });
             }
         });
     });

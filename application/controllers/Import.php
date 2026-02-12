@@ -37,7 +37,12 @@ class Import extends CI_Controller
         $this->load->library('upload', $config);
 
         if (!$this->upload->do_upload('file')) {
-            $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">' . $this->upload->display_errors() . '</div>');
+            $error = $this->upload->display_errors('', '');
+            if ($this->input->is_ajax_request()) {
+                echo json_encode(['status' => 'error', 'message' => $error]);
+                return;
+            }
+            $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">' . $error . '</div>');
             redirect('import');
         } else {
             $file_data = $this->upload->data();
@@ -45,6 +50,11 @@ class Import extends CI_Controller
 
             // Store file info in session to process in next step
             $this->session->set_userdata('import_file', $file_path);
+
+            if ($this->input->is_ajax_request()) {
+                echo json_encode(['status' => 'success', 'redirect_url' => base_url('import/map')]);
+                return;
+            }
             redirect('import/map');
         }
     }
@@ -134,7 +144,6 @@ class Import extends CI_Controller
         $col_title = $this->input->post('col_title');
         $col_amount = $this->input->post('col_amount');
         $col_type = $this->input->post('col_type');
-        $col_description = $this->input->post('col_description');
         $col_payee = $this->input->post('col_payee');
         $has_header = $this->input->post('has_header');
 
@@ -171,14 +180,12 @@ class Import extends CI_Controller
                 $real_idx_title = $active_cols[$col_title] ?? null;
                 $real_idx_amount = $active_cols[$col_amount] ?? null;
                 $real_idx_type = ($col_type !== "") ? ($active_cols[$col_type] ?? null) : null;
-                $real_idx_desc = ($col_description !== "") ? ($active_cols[$col_description] ?? null) : null;
                 $real_idx_payee = ($col_payee !== "") ? ($active_cols[$col_payee] ?? null) : null;
 
                 $raw_date = ($real_idx_date !== null) ? ($cells[$real_idx_date] ?? null) : null;
                 $title = ($real_idx_title !== null) ? ($cells[$real_idx_title] ?? 'Untitled') : 'Untitled';
                 $amount = ($real_idx_amount !== null) ? ($cells[$real_idx_amount] ?? 0) : 0;
                 $type = ($real_idx_type !== null && isset($cells[$real_idx_type])) ? strtolower($cells[$real_idx_type]) : 'expense';
-                $description = ($real_idx_desc !== null) ? ($cells[$real_idx_desc] ?? '') : '';
                 $payee = ($real_idx_payee !== null) ? ($cells[$real_idx_payee] ?? '') : '';
 
                 // Clean amount (remove Rp, dots, commas)
@@ -194,7 +201,6 @@ class Import extends CI_Controller
                         'amount' => $amount,
                         'type' => (strpos($type, 'in') !== false || strpos($type, 'masuk') !== false) ? 'income' : 'expense',
                         'category' => $suggested_category,
-                        'description' => $description,
                         'payee' => $payee
                     ];
                 }
@@ -220,7 +226,6 @@ class Import extends CI_Controller
         $amounts = $this->input->post('amounts');
         $types = $this->input->post('types');
         $categories = $this->input->post('categories');
-        $descriptions = $this->input->post('descriptions');
         $payees = $this->input->post('payees');
         $user_id = $this->session->userdata('user_id');
 
@@ -241,7 +246,6 @@ class Import extends CI_Controller
                 'amount' => $amounts[$i],
                 'type' => $types[$i],
                 'category' => $final_category,
-                'description' => $descriptions[$i] ?? '',
                 'payee' => $payees[$i] ?? '',
                 'transaction_date' => $dates[$i],
                 'created_at' => date('Y-m-d H:i:s')

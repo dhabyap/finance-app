@@ -7,6 +7,38 @@
         </div>
     </div>
 
+    <!-- Financial Freedom Goal Card -->
+    <?php if ($goal_amount > 0): ?>
+        <?php
+        $progress = ($balance / $goal_amount) * 100;
+        $progress = max(0, min(100, $progress));
+        ?>
+        <div class="card card-brutal p-3 mb-4 bg-pastel-blue">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="font-mono fw-bold m-0">FINANCIAL FREEDOM</h6>
+                <span class="badge bg-white text-black border border-black font-mono fw-bold">
+                    <?= round($progress, 1) ?>%
+                </span>
+            </div>
+            <div class="progress border-brutal mb-2" style="height: 15px; background: white;">
+                <div class="progress-bar bg-pastel-green" role="progressbar" style="width: <?= $progress ?>%"></div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <small class="font-mono fw-bold text-xs">Rp <?= number_format($balance, 0, ',', '.') ?></small>
+                <small class="font-mono text-xs">TARGET: <?= number_format($goal_amount, 0, ',', '.') ?></small>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="card card-brutal p-3 mb-4 border-dashed bg-light">
+            <a href="<?= base_url('dashboard/profile') ?>" class="text-decoration-none text-black">
+                <div class="text-center py-2">
+                    <span class="iconify mb-1" data-icon="lucide:target" data-width="24"></span>
+                    <p class="font-mono fw-bold m-0 small">SET YOUR FINANCIAL FREEDOM GOAL</p>
+                </div>
+            </a>
+        </div>
+    <?php endif; ?>
+
     <!-- Stats Row -->
     <div class="row g-3 mb-4">
         <div class="col-6">

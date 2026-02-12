@@ -29,6 +29,18 @@
                     value="<?= set_value('name', $user['name']) ?>" required>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label font-mono fw-bold">FINANCIAL FREEDOM GOAL (TARGET)</label>
+                <div class="input-group">
+                    <span class="input-group-text border-brutal bg-white fw-bold">Rp</span>
+                    <input type="text" name="goal_amount" class="form-control form-control-brutal"
+                        value="<?= set_value('goal_amount', $user['goal_amount']) ?>" placeholder="0"
+                        inputmode="numeric">
+                </div>
+                <small class="text-muted font-mono mt-1 d-block">This is the total savings/balance you aim to reach for
+                    your financial freedom.</small>
+            </div>
+
             <hr class="border-2 border-black my-4">
 
             <h5 class="font-mono fw-bold mb-3">CHANGE PASSWORD</h5>
@@ -60,3 +72,30 @@
         </div>
     </a>
 </div>
+
+<script>
+    function initPageScripts() {
+        // Thousand Separator Formatter
+        const $goalInput = $('input[name="goal_amount"]');
+
+        // Initial format if value exists
+        if ($goalInput.val()) {
+            $goalInput.val(new Intl.NumberFormat('id-ID').format($goalInput.val()));
+        }
+
+        $goalInput.on('input', function () {
+            let val = $(this).val().replace(/\D/g, ''); // Remove non-digits
+            if (val !== '') {
+                // Format with dots
+                $(this).val(new Intl.NumberFormat('id-ID').format(val));
+            }
+        });
+
+        $('form').on('submit', function () {
+            // Strip dots before submitting (standard form submit)
+            $goalInput.val($goalInput.val().replace(/\./g, ''));
+        });
+    }
+
+    $(document).ready(initPageScripts);
+</script>

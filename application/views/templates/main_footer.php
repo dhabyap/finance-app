@@ -22,7 +22,7 @@
     </a>
 
     <a href="<?= base_url('dashboard/stats') ?>"
-        class="nav-item-brutal <?= ($this->uri->segment(2) == 'stats') ? 'active' : '' ?>">
+        class="nav-item-brutal <?= ($this->uri->segment(2) == 'stats') ? 'active' : '' ?>" data-no-swup>
         <span class="iconify" data-icon="lucide:pie-chart"></span>
         <span>STATS</span>
     </a>
@@ -54,6 +54,21 @@
         if (typeof Iconify !== 'undefined') {
             Iconify.scan();
         }
+
+        // Trigger page-specific initialization if defined
+        if (typeof initPageScripts === 'function') {
+            initPageScripts();
+        }
+    });
+
+    // Add logic to hide loader if it gets stuck
+    swup.hooks.on('visit:start', () => {
+        // Ensure some visual feedback that transition started if needed
+    });
+
+    swup.hooks.on('visit:end', () => {
+        // Cleanup or scroll
+        window.scrollTo(0, 0);
     });
 </script>
 </body>
