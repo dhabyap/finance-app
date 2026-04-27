@@ -14,6 +14,12 @@
         <span>LIST</span>
     </a>
 
+    <a href="<?= base_url('chat') ?>"
+        class="nav-item-brutal <?= ($this->uri->segment(1) == 'chat') ? 'active' : '' ?>">
+        <span class="iconify" data-icon="lucide:message-square"></span>
+        <span>CHAT</span>
+    </a>
+
     <!-- PLUS BUTTON -->
     <a href="<?= base_url('dashboard/add') ?>" class="nav-item-brutal nav-plus">
         <div class="plus-btn">
