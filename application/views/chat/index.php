@@ -61,8 +61,9 @@
                                         <div class="font-mono small">Payee: <b><?= htmlspecialchars($d['payee']) ?></b></div>
 
                                         <div class="d-flex gap-2 mt-3">
-                                            <button class="btn btn-sm btn-brutal bg-white font-mono fw-bold"
-                                                onclick="confirmDraft(<?= (int)$thread['id'] ?>, <?= htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8') ?>)">
+                                            <button type="button"
+                                                class="btn btn-sm btn-brutal bg-white font-mono fw-bold btn-confirm-draft"
+                                                data-draft='<?= htmlspecialchars(json_encode($d), ENT_QUOTES, "UTF-8") ?>'>
                                                 CONFIRM
                                             </button>
                                             <a class="btn btn-sm border-brutal bg-white font-mono fw-bold"
@@ -178,6 +179,21 @@
                 }
             });
         }
+
+        // Avoid inline onclick; works on first load and after Swup transitions.
+        $(document).off('click.btnConfirmDraft').on('click.btnConfirmDraft', '.btn-confirm-draft', function () {
+            const raw = $(this).attr('data-draft') || '{}';
+            let draft = null;
+            try {
+                draft = JSON.parse(raw);
+            } catch (e) {
+                showError('Invalid draft payload');
+                return;
+            }
+            if ($(this).prop('disabled')) return;
+            $(this).prop('disabled', true);
+            window.confirmDraft(threadId, draft);
+        });
     }
 </script>
 
