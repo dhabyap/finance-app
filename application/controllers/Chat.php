@@ -260,10 +260,10 @@ class Chat extends CI_Controller
             // Diagnostics (do not leak secrets)
             'dotenv_loaded' => defined('DOTENV_LOADED') ? (bool)DOTENV_LOADED : false,
             'env_seen' => [
-                'AI_ENABLED_set' => getenv('AI_ENABLED') !== false,
-                'AI_ENABLED_value' => (getenv('AI_ENABLED') !== false) ? (string)getenv('AI_ENABLED') : null,
-                'GEMINI_API_KEY_present' => (string)getenv('GEMINI_API_KEY') !== '',
-                'GROQ_API_KEY_present' => (string)getenv('GROQ_API_KEY') !== '',
+                'AI_ENABLED_set' => isset($_ENV['AI_ENABLED']) || isset($_SERVER['AI_ENABLED']) || getenv('AI_ENABLED') !== false,
+                'AI_ENABLED_value' => isset($_ENV['AI_ENABLED']) ? (string)$_ENV['AI_ENABLED'] : (isset($_SERVER['AI_ENABLED']) ? (string)$_SERVER['AI_ENABLED'] : ((getenv('AI_ENABLED') !== false) ? (string)getenv('AI_ENABLED') : null)),
+                'GEMINI_API_KEY_present' => (string)(isset($_ENV['GEMINI_API_KEY']) ? $_ENV['GEMINI_API_KEY'] : (isset($_SERVER['GEMINI_API_KEY']) ? $_SERVER['GEMINI_API_KEY'] : (getenv('GEMINI_API_KEY') !== false ? getenv('GEMINI_API_KEY') : ''))) !== '',
+                'GROQ_API_KEY_present' => (string)(isset($_ENV['GROQ_API_KEY']) ? $_ENV['GROQ_API_KEY'] : (isset($_SERVER['GROQ_API_KEY']) ? $_SERVER['GROQ_API_KEY'] : (getenv('GROQ_API_KEY') !== false ? getenv('GROQ_API_KEY') : ''))) !== '',
             ],
             'ai_enabled' => (bool)($aiCfg['ai_enabled'] ?? false),
             'primary_provider' => (string)($aiCfg['ai_provider_primary'] ?? ''),
