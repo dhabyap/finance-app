@@ -22,47 +22,48 @@ class TransactionExtractor
         $amount = $this->parse_amount_idr($lower);
         $date = $this->parse_date($lower, $todayYmd);
 
+        // Always build a partial draft so we can merge/continue on clarification loops.
+        $title = $this->guess_title($lower);
+        $draft = [
+            'type' => $type ?: '',
+            'amount' => ($amount === null) ? '' : $amount,
+            'transaction_date' => $date ?: '',
+            'category' => '', // Filled by server-side category classifier (AI-first).
+            'title' => $title ?: $text,
+            'payee' => '',
+        ];
+
         $missing = [];
         if (!$type) $missing[] = 'type';
         if ($amount === null) $missing[] = 'amount';
         if (!$date) $missing[] = 'transaction_date';
+        if (trim((string)($draft['title'] ?? '')) === '') $missing[] = 'title';
 
         if (!empty($missing)) {
             // Ask 1 most important question to proceed.
             if (in_array('amount', $missing, true)) {
-                return $this->clarify($missing, 'Berapa jumlahnya (contoh: 25k, 35 ribu, 2jt)?');
+                return $this->clarify($missing, 'Berapa jumlahnya (contoh: 25k, 35 ribu, 2jt)?', $draft);
             }
             if (in_array('type', $missing, true)) {
-                return $this->clarify($missing, 'Ini pemasukan atau pengeluaran?');
+                return $this->clarify($missing, 'Ini pemasukan atau pengeluaran?', $draft);
             }
-            return $this->clarify($missing, 'Tanggal berapa transaksinya? (contoh: hari ini / kemarin / 2026-04-27)');
+            return $this->clarify($missing, 'Tanggal berapa transaksinya? (contoh: hari ini / kemarin / 2026-04-27)', $draft);
         }
-
-        // Title heuristic: remove amount and some keywords; keep it short.
-        $title = $this->guess_title($lower);
 
         return [
             'intent' => 'create_transaction',
-            'draft' => [
-                'type' => $type,
-                'amount' => $amount,
-                'transaction_date' => $date,
-                // Category will be filled by server-side category classifier (AI-first).
-                'category' => '',
-                'title' => $title ?: $text,
-                'payee' => '',
-            ],
+            'draft' => $draft,
             'missing' => [],
             'questions' => [],
             'confidence' => 0.65,
         ];
     }
 
-    private function clarify($missing, $question)
+    private function clarify($missing, $question, $draft = null)
     {
         return [
             'intent' => 'clarify',
-            'draft' => null,
+            'draft' => is_array($draft) ? $draft : null,
             'missing' => array_values($missing),
             'questions' => [$question],
             'confidence' => 0.0,

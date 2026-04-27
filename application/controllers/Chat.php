@@ -113,9 +113,18 @@ class Chat extends CI_Controller
             return;
         }
 
+        // If the last assistant response asked for clarification, merge user reply with prior context
+        // so the extractor can fill the missing fields and avoid loops.
+        $pendingKey = 'chat_pending_' . (int)$user_id;
+        $pending = $this->session->userdata($pendingKey);
+        $messageForExtraction = $message;
+        if (is_array($pending) && !empty($pending['text']) && is_string($pending['text'])) {
+            $messageForExtraction = trim($pending['text'] . ' ' . $message);
+        }
+
         // Cheap dedup: if the same message is sent repeatedly, reuse last AI result for this user.
         $dedupKey = 'ai_dedup_' . (int)$user_id;
-        $msgHash = hash('sha256', $message);
+        $msgHash = hash('sha256', $messageForExtraction);
         $cached = $this->session->userdata($dedupKey);
 
         $this->Chat_model->add_message($thread_id, 'user', $message);
@@ -124,14 +133,14 @@ class Chat extends CI_Controller
         if (is_array($cached) && ($cached['hash'] ?? '') === $msgHash && !empty($cached['result'])) {
             $result = $cached['result'];
         } else {
-            $result = $this->transactionextractor->extract($message, $today);
+            $result = $this->transactionextractor->extract($messageForExtraction, $today);
         }
 
         // Optional LLM fallback: only when enabled and regex parser is uncertain.
         $aiCfg = $this->config->item('ai');
         if (!empty($aiCfg['ai_enabled']) && ($result['intent'] === 'clarify' || ($result['confidence'] ?? 0) < 0.7)) {
             if ($this->rate_limit_ok($aiCfg, (int)$user_id)) {
-                $llm = $this->extract_with_llm($message, $today, $aiCfg, (int)$user_id);
+                $llm = $this->extract_with_llm($messageForExtraction, $today, $aiCfg, (int)$user_id);
                 if ($llm) {
                     $result = $llm;
                 }
@@ -149,10 +158,18 @@ class Chat extends CI_Controller
                 $isAllowed = $existingCat !== '' && in_array($existingCat, $allowedNames, true);
 
                 if (!$isAllowed) {
-                    $cls = $this->categoryclassifier->classify($message, $type, $allowed ?: [], is_array($aiCfg) ? $aiCfg : []);
+                    $cls = $this->categoryclassifier->classify($messageForExtraction, $type, $allowed ?: [], is_array($aiCfg) ? $aiCfg : []);
                     $result['draft']['category'] = $cls['category'];
                 }
             }
+        }
+
+        // Update/clear pending context so clarification follows a straight path.
+        if (($result['intent'] ?? '') === 'clarify') {
+            // Avoid unbounded growth.
+            $this->session->set_userdata($pendingKey, ['text' => mb_substr($messageForExtraction, 0, 500, 'UTF-8')]);
+        } else {
+            $this->session->unset_userdata($pendingKey);
         }
 
         // Update dedup cache (no secrets).
