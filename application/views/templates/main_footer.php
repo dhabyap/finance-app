@@ -54,6 +54,13 @@
 <script>
     const swup = new Swup();
 
+    // Run page initialization on first load as well (Swup hook only runs on transitions).
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof initPageScripts === 'function') {
+            initPageScripts();
+        }
+    });
+
     // Re-initialize scripts after page transition
     swup.hooks.on('content:replace', () => {
         // Re-run Iconify icons scan
