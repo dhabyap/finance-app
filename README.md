@@ -65,6 +65,10 @@ AI_RATE_LIMIT_PER_MINUTE=15
 GEMINI_API_KEY=...
 GROQ_API_KEY=...
 ```
+
+Debug endpoint (requires login):
+- `GET /chat/ai_status` shows current AI config (no keys leaked)
+- `GET /chat/ai_status?probe=1` performs a lightweight provider call to confirm connectivity (rate-limited)
 5. **Run the App**:
    - Place the project in your local server directory (e.g., Laragon's `www` or XAMPP's `htdocs`).
    - Access the app via browser.
