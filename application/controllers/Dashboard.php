@@ -145,6 +145,16 @@ class Dashboard extends CI_Controller
             // Using get_categories_by_user to support both global and user specific
             $data['categories'] = $this->Transaction_model->get_categories_by_user(null, $user_id);
 
+            // Optional prefill from query params (used by AI Chat "Edit" flow).
+            $data['prefill'] = [
+                'type' => $this->input->get('type'),
+                'title' => $this->input->get('title'),
+                'amount' => $this->input->get('amount'),
+                'category' => $this->input->get('category'),
+                'payee' => $this->input->get('payee'),
+                'date' => $this->input->get('date'),
+            ];
+
             $this->load->view('templates/header', $data);
             $this->load->view('dashboard/add', $data);
             $this->load->view('templates/main_footer');

@@ -1,4 +1,17 @@
 <div class="animate-up">
+    <?php
+    $prefill = isset($prefill) && is_array($prefill) ? $prefill : [];
+    $pfType = $prefill['type'] ?? null;
+    $pfTitle = $prefill['title'] ?? '';
+    $pfAmountRaw = $prefill['amount'] ?? '';
+    $pfAmount = '';
+    if ($pfAmountRaw !== '' && is_numeric($pfAmountRaw)) {
+        $pfAmount = number_format((float)$pfAmountRaw, 0, ',', '.');
+    }
+    $pfCategory = $prefill['category'] ?? '';
+    $pfPayee = $prefill['payee'] ?? '';
+    $pfDate = $prefill['date'] ?? '';
+    ?>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="font-mono fw-bold m-0">ADD TRANSACTION</h4>
         <a href="<?= base_url('dashboard/transactions') ?>"
@@ -31,14 +44,14 @@
                 <div class="d-flex gap-3">
                     <div class="form-check flex-fill">
                         <input class="form-check-input border-2 border-black" type="radio" name="type" id="type1"
-                            value="income" checked>
+                            value="income" <?= ($pfType === 'income' || !$pfType) ? 'checked' : '' ?>>
                         <label class="form-check-label font-mono fw-bold" for="type1">
                             INCOME
                         </label>
                     </div>
                     <div class="form-check flex-fill">
                         <input class="form-check-input border-2 border-black" type="radio" name="type" id="type2"
-                            value="expense">
+                            value="expense" <?= ($pfType === 'expense') ? 'checked' : '' ?>>
                         <label class="form-check-label font-mono fw-bold" for="type2">
                             EXPENSE
                         </label>
@@ -49,7 +62,7 @@
             <div class="mb-3">
                 <label class="form-label font-mono fw-bold">TITLE</label>
                 <input type="text" name="title" class="form-control form-control-brutal"
-                    placeholder="e.g. Salary, Coffee" required>
+                    placeholder="e.g. Salary, Coffee" value="<?= htmlspecialchars($pfTitle) ?>" required>
             </div>
 
             <div class="mb-3">
@@ -57,14 +70,14 @@
                 <div class="input-group">
                     <span class="input-group-text border-brutal bg-white fw-bold">Rp</span>
                     <input type="text" name="amount" class="form-control form-control-brutal" placeholder="0"
-                        inputmode="numeric" required>
+                        inputmode="numeric" value="<?= htmlspecialchars($pfAmount) ?>" required>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label font-mono fw-bold">CATEGORY</label>
                 <div id="category-select-wrapper">
-                    <select id="categorySelect" name="category" class="form-select form-control-brutal" required>
+                    <select id="categorySelect" name="category" class="form-select form-control-brutal" required data-prefill="<?= htmlspecialchars($pfCategory) ?>">
                         <option value="">-- Select Category --</option>
                         <!-- Dynamic options -->
                         <option value="NEW_CATEGORY">+ ADD NEW CATEGORY...</option>
@@ -85,14 +98,15 @@
             <div class="mb-3">
                 <label class="form-label font-mono fw-bold">PAYEE / RECEIVER</label>
                 <input type="text" name="payee" class="form-control form-control-brutal"
-                    placeholder="e.g. Starbucks, John Doe">
+                    placeholder="e.g. Starbucks, John Doe" value="<?= htmlspecialchars($pfPayee) ?>">
             </div>
 
             <!-- Description removed as per user request -->
 
             <div class="mb-4">
                 <label class="form-label font-mono fw-bold">DATE</label>
-                <input type="date" name="date" class="form-control form-control-brutal" value="<?= date('Y-m-d') ?>"
+                <input type="date" name="date" class="form-control form-control-brutal"
+                    value="<?= htmlspecialchars($pfDate ?: date('Y-m-d')) ?>"
                     required>
             </div>
 
@@ -128,6 +142,7 @@
         function updateCategoryList() {
             const selectedType = $('input[name="type"]:checked').val();
             const currentVal = $categorySelect.val();
+            const prefillVal = $categorySelect.data('prefill');
 
             // Keep "NEW_CATEGORY" option, "Select Category" option, and add filtered ones
             $categorySelect.html('<option value="">-- Select Category --</option>');
@@ -142,6 +157,10 @@
             // Re-select if still valid
             if (currentVal && currentVal !== 'NEW_CATEGORY') {
                 $categorySelect.val(currentVal);
+            }
+            // Initial prefill (only if nothing selected yet)
+            if (!currentVal && prefillVal) {
+                $categorySelect.val(prefillVal);
             }
         }
 
