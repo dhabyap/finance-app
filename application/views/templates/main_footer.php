@@ -20,12 +20,7 @@
         <span>CHAT</span>
     </a>
 
-    <!-- PLUS BUTTON -->
-    <a href="<?= base_url('dashboard/add') ?>" class="nav-item-brutal nav-plus">
-        <div class="plus-btn">
-            <span class="iconify" data-icon="lucide:plus"></span>
-        </div>
-    </a>
+    <!-- Center slot is CHAT (plus button removed; see issue #17) -->
 
     <a href="<?= base_url('dashboard/stats') ?>"
         class="nav-item-brutal <?= ($this->uri->segment(2) == 'stats') ? 'active' : '' ?>" data-no-swup>
