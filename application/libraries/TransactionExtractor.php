@@ -47,7 +47,8 @@ class TransactionExtractor
                 'type' => $type,
                 'amount' => $amount,
                 'transaction_date' => $date,
-                'category' => 'Uncategorized',
+                // Category will be filled by server-side category classifier (AI-first).
+                'category' => '',
                 'title' => $title ?: $text,
                 'payee' => '',
             ],

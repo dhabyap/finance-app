@@ -13,6 +13,7 @@ class Chat extends CI_Controller
         $this->load->library('form_validation');
         $this->load->library('TransactionExtractor');
         $this->load->library('TransactionDraftValidator');
+        $this->load->library('CategoryClassifier');
         $this->config->load('ai', true);
 
         if (!$this->session->userdata('user_id')) {
@@ -133,6 +134,23 @@ class Chat extends CI_Controller
                 $llm = $this->extract_with_llm($message, $today, $aiCfg, (int)$user_id);
                 if ($llm) {
                     $result = $llm;
+                }
+            }
+        }
+
+        // Auto category fill (AI-first + strict allowed list + fallback).
+        if (($result['intent'] ?? '') === 'create_transaction' && !empty($result['draft']) && is_array($result['draft'])) {
+            $type = (string)($result['draft']['type'] ?? '');
+            if (in_array($type, ['income', 'expense'], true)) {
+                $allowed = $this->Transaction_model->get_categories_by_user($type, (int)$user_id);
+                $existingCat = trim((string)($result['draft']['category'] ?? ''));
+
+                $allowedNames = array_map(function ($c) { return (string)$c['name']; }, $allowed ?: []);
+                $isAllowed = $existingCat !== '' && in_array($existingCat, $allowedNames, true);
+
+                if (!$isAllowed) {
+                    $cls = $this->categoryclassifier->classify($message, $type, $allowed ?: [], is_array($aiCfg) ? $aiCfg : []);
+                    $result['draft']['category'] = $cls['category'];
                 }
             }
         }
@@ -310,6 +328,11 @@ class Chat extends CI_Controller
         // Build prompt with strict JSON contract. Keep it short for cheaper models.
         $categories = $this->Transaction_model->get_categories_by_user(null, $user_id);
         $catNames = array_map(function ($c) { return $c['name']; }, $categories ?: []);
+        $expenseNames = array_values(array_map(function ($c) { return $c['name']; }, array_filter($categories ?: [], function ($c) { return ($c['type'] ?? '') === 'expense'; })));
+        $incomeNames = array_values(array_map(function ($c) { return $c['name']; }, array_filter($categories ?: [], function ($c) { return ($c['type'] ?? '') === 'income'; })));
+        $defaultExpense = 'Others';
+        foreach ($expenseNames as $n) { if (strcasecmp($n, 'Others') === 0) { $defaultExpense = $n; break; } }
+        $defaultIncome = $incomeNames[0] ?? 'Salary';
 
         $system = "You are a transaction extraction engine. Output JSON only. No markdown.\n"
             . "Contract:\n"
@@ -317,7 +340,7 @@ class Chat extends CI_Controller
             . "Rules:\n"
             . "- Do NOT invent amounts/dates.\n"
             . "- If missing required info, set intent=clarify, include missing fields, ask exactly 1 question.\n"
-            . "- Use category from allowed list when possible; otherwise set category=\"Uncategorized\".\n"
+            . "- category MUST be one of the allowed categories. If unsure: for expense use \"{$defaultExpense}\", for income use \"{$defaultIncome}\".\n"
             . "Today: {$today}\n"
             . "Allowed categories: " . implode(', ', array_slice($catNames, 0, 50));
 
