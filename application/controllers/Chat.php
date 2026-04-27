@@ -112,10 +112,19 @@ class Chat extends CI_Controller
             return;
         }
 
+        // Cheap dedup: if the same message is sent repeatedly, reuse last AI result for this user.
+        $dedupKey = 'ai_dedup_' . (int)$user_id;
+        $msgHash = hash('sha256', $message);
+        $cached = $this->session->userdata($dedupKey);
+
         $this->Chat_model->add_message($thread_id, 'user', $message);
 
         $today = date('Y-m-d');
-        $result = $this->transactionextractor->extract($message, $today);
+        if (is_array($cached) && ($cached['hash'] ?? '') === $msgHash && !empty($cached['result'])) {
+            $result = $cached['result'];
+        } else {
+            $result = $this->transactionextractor->extract($message, $today);
+        }
 
         // Optional LLM fallback: only when enabled and regex parser is uncertain.
         $aiCfg = $this->config->item('ai');
@@ -127,6 +136,9 @@ class Chat extends CI_Controller
                 }
             }
         }
+
+        // Update dedup cache (no secrets).
+        $this->session->set_userdata($dedupKey, ['hash' => $msgHash, 'result' => $result]);
 
         if ($result['intent'] === 'create_transaction') {
             $assistantText = "Aku buat draft transaksi. Cek dulu ya, lalu klik Confirm.";
@@ -310,8 +322,17 @@ class Chat extends CI_Controller
         $router = new AiRouter($aiCfg);
         $res = $router->chat($messages);
         if (empty($res['ok'])) {
+            log_message('error', 'AI chat failed user_id=' . (int)$user_id . ' status=' . (int)($res['status'] ?? 0) . ' error=' . (string)($res['error'] ?? ''));
             return null;
         }
+        log_message(
+            'info',
+            'AI chat ok user_id=' . (int)$user_id
+                . ' provider=' . (string)($res['meta']['provider'] ?? '')
+                . ' model=' . (string)($res['meta']['model'] ?? '')
+                . ' latency_ms=' . (int)($res['meta']['latency_ms'] ?? 0)
+                . ' failover=' . (!empty($res['meta']['failover_used']) ? '1' : '0')
+        );
 
         $json = $this->transactiondraftvalidator->parse_json_from_text($res['text'] ?? '');
         if (!$json) return null;

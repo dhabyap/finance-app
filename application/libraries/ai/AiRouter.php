@@ -29,18 +29,30 @@ class AiRouter
         $maxBytes = (int)($this->config['ai_max_response_bytes'] ?? 50000);
 
         $last = null;
+        $attemptMeta = [];
         foreach ($attempts as $a) {
             $providerName = $a['provider'];
             $model = $a['model'];
 
             $prov = $this->make_provider($providerName, $maxBytes);
+            $t0 = microtime(true);
             $res = $prov->chat($messages, ['model' => $model, 'timeout_seconds' => $timeout]);
+            $latencyMs = (int)round((microtime(true) - $t0) * 1000);
+            $res['meta']['latency_ms'] = $latencyMs;
 
             if ($res['ok']) {
                 $res['meta']['failover_used'] = ($providerName !== $primary);
+                $res['meta']['attempts'] = $attemptMeta;
                 return $res;
             }
 
+            $attemptMeta[] = [
+                'provider' => $providerName,
+                'model' => $model,
+                'status' => (int)($res['status'] ?? 0),
+                'error' => (string)($res['error'] ?? ''),
+                'latency_ms' => $latencyMs,
+            ];
             $last = $res;
 
             // Failover only on transient errors.
@@ -51,7 +63,11 @@ class AiRouter
             }
         }
 
-        return $last ?: ['ok' => false, 'text' => '', 'status' => 0, 'error' => 'AI router failure', 'meta' => []];
+        if (!$last) {
+            return ['ok' => false, 'text' => '', 'status' => 0, 'error' => 'AI router failure', 'meta' => ['attempts' => $attemptMeta]];
+        }
+        $last['meta']['attempts'] = $attemptMeta;
+        return $last;
     }
 
     private function make_provider($name, $maxBytes)
