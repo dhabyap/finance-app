@@ -34,6 +34,7 @@ A professional, mobile-first financial management web application built with **C
 2. **Setup Database**:
    - Create a database named `finance_app`.
    - Import `finance_app.sql` into your MySQL server.
+   - If you pulled an update and AI Chat shows Error 1146 (missing `chat_threads` table), apply `sql/ai_chat_tables.sql` to your existing database.
 3. **Configure Database**:
    - Open `application/config/database.php` and update your database credentials:
      ```php
