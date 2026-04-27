@@ -21,6 +21,17 @@ class Chat_model extends CI_Model
         return $this->db->insert_id();
     }
 
+    public function get_or_create_default_thread($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('title', 'default');
+        $thread = $this->db->get('chat_threads')->row_array();
+        if ($thread) {
+            return (int)$thread['id'];
+        }
+        return (int)$this->create_thread($user_id, 'default');
+    }
+
     public function get_threads($user_id, $limit = 20)
     {
         $this->db->where('user_id', $user_id);
@@ -60,6 +71,12 @@ class Chat_model extends CI_Model
         $this->db->order_by('id', 'ASC');
         $this->db->limit($limit);
         return $this->db->get('chat_messages')->result_array();
+    }
+
+    public function delete_messages($thread_id)
+    {
+        $this->db->where('thread_id', $thread_id);
+        return $this->db->delete('chat_messages');
     }
 
     public function delete_threads_for_user($user_id)
