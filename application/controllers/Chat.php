@@ -37,30 +37,24 @@ class Chat extends CI_Controller
         return true;
     }
 
+    private function default_thread_id()
+    {
+        $user_id = (int)$this->session->userdata('user_id');
+        return (int)$this->Chat_model->get_or_create_default_thread($user_id);
+    }
+
     public function index()
     {
         if (!$this->ensure_tables_exist_or_show_help()) return;
-        $user_id = $this->session->userdata('user_id');
-
-        $thread_id = $this->input->get('thread');
-        if ($thread_id) {
-            redirect('chat/thread/' . (int)$thread_id);
-        }
-
-        $threads = $this->Chat_model->get_threads($user_id);
-        if (empty($threads)) {
-            $newId = $this->Chat_model->create_thread($user_id, 'New chat');
-            redirect('chat/thread/' . (int)$newId);
-        }
-
-        redirect('chat/thread/' . (int)$threads[0]['id']);
+        redirect('chat/thread/' . $this->default_thread_id());
     }
 
     public function thread($thread_id)
     {
         if (!$this->ensure_tables_exist_or_show_help()) return;
         $user_id = $this->session->userdata('user_id');
-        $thread_id = (int)$thread_id;
+        // Use a single implicit conversation per user.
+        $thread_id = $this->default_thread_id();
 
         $thread = $this->Chat_model->get_thread($thread_id);
         if (!$thread || (int)$thread['user_id'] !== (int)$user_id) {
@@ -69,7 +63,6 @@ class Chat extends CI_Controller
         }
 
         $data = [];
-        $data['threads'] = $this->Chat_model->get_threads($user_id, 50);
         $data['thread'] = $thread;
         $data['messages'] = $this->Chat_model->get_messages($thread_id, 200);
 
@@ -81,18 +74,16 @@ class Chat extends CI_Controller
     public function new_thread()
     {
         if (!$this->ensure_tables_exist_or_show_help()) return;
-        $user_id = $this->session->userdata('user_id');
-        $id = $this->Chat_model->create_thread($user_id, 'New chat');
-        redirect('chat/thread/' . (int)$id);
+        // Threads are not exposed in the UI; just redirect to default conversation.
+        redirect('chat/thread/' . $this->default_thread_id());
     }
 
     public function clear_history()
     {
         if (!$this->ensure_tables_exist_or_show_help()) return;
-        $user_id = $this->session->userdata('user_id');
-        $this->Chat_model->delete_threads_for_user($user_id);
-        $id = $this->Chat_model->create_thread($user_id, 'New chat');
-        redirect('chat/thread/' . (int)$id);
+        $thread_id = $this->default_thread_id();
+        $this->Chat_model->delete_messages($thread_id);
+        redirect('chat/thread/' . (int)$thread_id);
     }
 
     public function send($thread_id)
@@ -104,7 +95,8 @@ class Chat extends CI_Controller
         }
 
         $user_id = $this->session->userdata('user_id');
-        $thread_id = (int)$thread_id;
+        // Ignore URL thread_id; always use default conversation.
+        $thread_id = $this->default_thread_id();
         $thread = $this->Chat_model->get_thread($thread_id);
         if (!$thread || (int)$thread['user_id'] !== (int)$user_id) {
             $this->output->set_status_header(404);
@@ -151,7 +143,8 @@ class Chat extends CI_Controller
         }
 
         $user_id = $this->session->userdata('user_id');
-        $thread_id = (int)$thread_id;
+        // Ignore URL thread_id; always use default conversation.
+        $thread_id = $this->default_thread_id();
         $thread = $this->Chat_model->get_thread($thread_id);
         if (!$thread || (int)$thread['user_id'] !== (int)$user_id) {
             $this->output->set_status_header(404);
