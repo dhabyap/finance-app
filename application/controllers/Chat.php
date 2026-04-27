@@ -6,6 +6,7 @@ class Chat extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->database();
         $this->load->model('Chat_model');
         $this->load->model('Transaction_model');
         $this->load->model('User_model');
@@ -17,8 +18,28 @@ class Chat extends CI_Controller
         }
     }
 
+    private function ensure_tables_exist_or_show_help()
+    {
+        // Avoid raw DB errors for older installs that haven't applied the SQL patch yet.
+        if (!$this->db->table_exists('chat_threads') || !$this->db->table_exists('chat_messages')) {
+            $data = [
+                'missing' => [],
+            ];
+            if (!$this->db->table_exists('chat_threads')) $data['missing'][] = 'chat_threads';
+            if (!$this->db->table_exists('chat_messages')) $data['missing'][] = 'chat_messages';
+
+            $this->output->set_status_header(500);
+            $this->load->view('templates/header', $data);
+            $this->load->view('chat/missing_tables', $data);
+            $this->load->view('templates/main_footer');
+            return false;
+        }
+        return true;
+    }
+
     public function index()
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         $user_id = $this->session->userdata('user_id');
 
         $thread_id = $this->input->get('thread');
@@ -37,6 +58,7 @@ class Chat extends CI_Controller
 
     public function thread($thread_id)
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         $user_id = $this->session->userdata('user_id');
         $thread_id = (int)$thread_id;
 
@@ -58,6 +80,7 @@ class Chat extends CI_Controller
 
     public function new_thread()
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         $user_id = $this->session->userdata('user_id');
         $id = $this->Chat_model->create_thread($user_id, 'New chat');
         redirect('chat/thread/' . (int)$id);
@@ -65,6 +88,7 @@ class Chat extends CI_Controller
 
     public function clear_history()
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         $user_id = $this->session->userdata('user_id');
         $this->Chat_model->delete_threads_for_user($user_id);
         $id = $this->Chat_model->create_thread($user_id, 'New chat');
@@ -73,6 +97,7 @@ class Chat extends CI_Controller
 
     public function send($thread_id)
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         if (!$this->input->is_ajax_request()) {
             show_404();
             return;
@@ -119,6 +144,7 @@ class Chat extends CI_Controller
 
     public function confirm($thread_id)
     {
+        if (!$this->ensure_tables_exist_or_show_help()) return;
         if (!$this->input->is_ajax_request()) {
             show_404();
             return;
@@ -170,4 +196,3 @@ class Chat extends CI_Controller
         echo json_encode(['status' => 'success', 'message' => 'Transaction saved']);
     }
 }
-
