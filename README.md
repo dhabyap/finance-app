@@ -48,6 +48,23 @@ A professional, mobile-first financial management web application built with **C
      ```php
      $config['base_url'] = 'http://localhost/finance_app/';
      ```
+
+## AI Chat (Optional)
+
+AI Chat works with a cheap-first parser by default. You can optionally enable LLM fallback (Gemini/Groq) via environment variables:
+
+```text
+AI_ENABLED=true
+AI_PROVIDER_PRIMARY=gemini
+AI_PROVIDER_FALLBACK=groq
+AI_MODEL_PRIMARY=gemini-1.5-flash
+AI_MODEL_FALLBACK=llama-3.1-8b-instant
+AI_TIMEOUT_SECONDS=20
+AI_RATE_LIMIT_PER_MINUTE=15
+
+GEMINI_API_KEY=...
+GROQ_API_KEY=...
+```
 5. **Run the App**:
    - Place the project in your local server directory (e.g., Laragon's `www` or XAMPP's `htdocs`).
    - Access the app via browser.

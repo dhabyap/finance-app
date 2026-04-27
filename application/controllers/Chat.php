@@ -12,6 +12,8 @@ class Chat extends CI_Controller
         $this->load->model('User_model');
         $this->load->library('form_validation');
         $this->load->library('TransactionExtractor');
+        $this->load->library('TransactionDraftValidator');
+        $this->config->load('ai', true);
 
         if (!$this->session->userdata('user_id')) {
             redirect('auth/login');
@@ -115,6 +117,17 @@ class Chat extends CI_Controller
         $today = date('Y-m-d');
         $result = $this->transactionextractor->extract($message, $today);
 
+        // Optional LLM fallback: only when enabled and regex parser is uncertain.
+        $aiCfg = $this->config->item('ai');
+        if (!empty($aiCfg['ai_enabled']) && ($result['intent'] === 'clarify' || ($result['confidence'] ?? 0) < 0.7)) {
+            if ($this->rate_limit_ok($aiCfg, (int)$user_id)) {
+                $llm = $this->extract_with_llm($message, $today, $aiCfg, (int)$user_id);
+                if ($llm) {
+                    $result = $llm;
+                }
+            }
+        }
+
         if ($result['intent'] === 'create_transaction') {
             $assistantText = "Aku buat draft transaksi. Cek dulu ya, lalu klik Confirm.";
         } elseif ($result['intent'] === 'clarify') {
@@ -187,5 +200,67 @@ class Chat extends CI_Controller
         $this->Chat_model->add_message($thread_id, 'assistant', 'Sip, transaksinya sudah disimpan.');
 
         echo json_encode(['status' => 'success', 'message' => 'Transaction saved']);
+    }
+
+    private function rate_limit_ok($aiCfg, $user_id)
+    {
+        $limit = (int)($aiCfg['ai_rate_limit_per_minute'] ?? 15);
+        if ($limit <= 0) return true;
+
+        $key = 'ai_rate_' . $user_id;
+        $now = time();
+        $windowStart = $now - 60;
+
+        $arr = $this->session->userdata($key);
+        if (!is_array($arr)) $arr = [];
+
+        $arr = array_values(array_filter($arr, function ($t) use ($windowStart) {
+            return is_int($t) && $t >= $windowStart;
+        }));
+
+        if (count($arr) >= $limit) {
+            return false;
+        }
+
+        $arr[] = $now;
+        $this->session->set_userdata($key, $arr);
+        return true;
+    }
+
+    private function extract_with_llm($message, $today, $aiCfg, $user_id)
+    {
+        // Build prompt with strict JSON contract. Keep it short for cheaper models.
+        $categories = $this->Transaction_model->get_categories_by_user(null, $user_id);
+        $catNames = array_map(function ($c) { return $c['name']; }, $categories ?: []);
+
+        $system = "You are a transaction extraction engine. Output JSON only. No markdown.\n"
+            . "Contract:\n"
+            . "{ \"intent\": \"create_transaction\"|\"clarify\"|\"unknown\", \"draft\": {\"type\":\"income|expense\",\"amount\":int,\"transaction_date\":\"YYYY-MM-DD\",\"category\":string,\"title\":string,\"payee\":string}, \"missing\":[], \"questions\":[], \"confidence\": number }\n"
+            . "Rules:\n"
+            . "- Do NOT invent amounts/dates.\n"
+            . "- If missing required info, set intent=clarify, include missing fields, ask exactly 1 question.\n"
+            . "- Use category from allowed list when possible; otherwise set category=\"Uncategorized\".\n"
+            . "Today: {$today}\n"
+            . "Allowed categories: " . implode(', ', array_slice($catNames, 0, 50));
+
+        $messages = [
+            ['role' => 'system', 'content' => $system],
+            ['role' => 'user', 'content' => $message],
+        ];
+
+        require_once APPPATH . 'libraries/ai/AiRouter.php';
+        $router = new AiRouter($aiCfg);
+        $res = $router->chat($messages);
+        if (empty($res['ok'])) {
+            return null;
+        }
+
+        $json = $this->transactiondraftvalidator->parse_json_from_text($res['text'] ?? '');
+        if (!$json) return null;
+
+        $validated = $this->transactiondraftvalidator->validate($json);
+        if (!$validated['ok']) return null;
+
+        return $validated['payload'];
     }
 }
