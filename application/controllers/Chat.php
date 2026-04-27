@@ -202,6 +202,64 @@ class Chat extends CI_Controller
         echo json_encode(['status' => 'success', 'message' => 'Transaction saved']);
     }
 
+    public function ai_status()
+    {
+        // Lightweight JSON endpoint for verifying AI configuration.
+        // Requires auth via constructor.
+        $aiCfg = $this->config->item('ai');
+        if (!is_array($aiCfg)) $aiCfg = [];
+
+        $out = [
+            'ai_enabled' => (bool)($aiCfg['ai_enabled'] ?? false),
+            'primary_provider' => (string)($aiCfg['ai_provider_primary'] ?? ''),
+            'fallback_provider' => (string)($aiCfg['ai_provider_fallback'] ?? ''),
+            'primary_model' => (string)($aiCfg['ai_model_primary'] ?? ''),
+            'fallback_model' => (string)($aiCfg['ai_model_fallback'] ?? ''),
+            'timeout_seconds' => (int)($aiCfg['ai_timeout_seconds'] ?? 0),
+            'rate_limit_per_minute' => (int)($aiCfg['ai_rate_limit_per_minute'] ?? 0),
+            'has_gemini_key' => !empty($aiCfg['gemini_api_key']),
+            'has_groq_key' => !empty($aiCfg['groq_api_key']),
+            'probe' => null,
+        ];
+
+        $probe = $this->input->get('probe');
+        if ($probe === '1') {
+            if (empty($out['ai_enabled'])) {
+                $out['probe'] = ['ok' => false, 'error' => 'AI is disabled (set AI_ENABLED=true)'];
+            } elseif (!$this->rate_limit_ok($aiCfg, (int)$this->session->userdata('user_id'))) {
+                $out['probe'] = ['ok' => false, 'error' => 'Rate limited'];
+            } else {
+                $today = date('Y-m-d');
+                $system = "Output JSON only: {\"ok\":true,\"today\":\"{$today}\"}. No markdown.";
+                $messages = [
+                    ['role' => 'system', 'content' => $system],
+                    ['role' => 'user', 'content' => 'ping'],
+                ];
+
+                require_once APPPATH . 'libraries/ai/AiRouter.php';
+                $router = new AiRouter($aiCfg);
+                $res = $router->chat($messages);
+                if (!empty($res['ok'])) {
+                    $out['probe'] = [
+                        'ok' => true,
+                        'provider' => $res['meta']['provider'] ?? null,
+                        'model' => $res['meta']['model'] ?? null,
+                    ];
+                } else {
+                    $out['probe'] = [
+                        'ok' => false,
+                        'status' => (int)($res['status'] ?? 0),
+                        'error' => (string)($res['error'] ?? 'Unknown'),
+                    ];
+                }
+            }
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($out));
+    }
+
     private function rate_limit_ok($aiCfg, $user_id)
     {
         $limit = (int)($aiCfg['ai_rate_limit_per_minute'] ?? 15);

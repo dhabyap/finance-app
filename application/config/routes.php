@@ -60,3 +60,4 @@ $route['chat/new_thread'] = 'chat/new_thread';
 $route['chat/clear_history'] = 'chat/clear_history';
 $route['chat/send/(:num)'] = 'chat/send/$1';
 $route['chat/confirm/(:num)'] = 'chat/confirm/$1';
+$route['chat/ai_status'] = 'chat/ai_status';

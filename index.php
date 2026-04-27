@@ -91,6 +91,25 @@ switch (ENVIRONMENT)
 
 /*
  *---------------------------------------------------------------
+ * Load .env (optional)
+ *---------------------------------------------------------------
+ *
+ * For local development, we support a .env file at project root.
+ * Values are loaded into environment variables via vlucas/phpdotenv.
+ */
+if (is_file(__DIR__ . '/vendor/autoload.php') && is_file(__DIR__ . '/.env')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+    if (class_exists('Dotenv\\Dotenv')) {
+        try {
+            Dotenv\Dotenv::createImmutable(__DIR__)->safeLoad();
+        } catch (Exception $e) {
+            // Ignore dotenv load errors; app can still run with system env vars.
+        }
+    }
+}
+
+/*
+ *---------------------------------------------------------------
  * SYSTEM DIRECTORY NAME
  *---------------------------------------------------------------
  *
