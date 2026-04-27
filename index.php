@@ -102,6 +102,7 @@ if (is_file(__DIR__ . '/vendor/autoload.php') && is_file(__DIR__ . '/.env')) {
     if (class_exists('Dotenv\\Dotenv')) {
         try {
             Dotenv\Dotenv::createImmutable(__DIR__)->safeLoad();
+            define('DOTENV_LOADED', true);
         } catch (Exception $e) {
             // Ignore dotenv load errors; app can still run with system env vars.
         }

@@ -222,6 +222,14 @@ class Chat extends CI_Controller
         if (!is_array($aiCfg)) $aiCfg = [];
 
         $out = [
+            // Diagnostics (do not leak secrets)
+            'dotenv_loaded' => defined('DOTENV_LOADED') ? (bool)DOTENV_LOADED : false,
+            'env_seen' => [
+                'AI_ENABLED_set' => getenv('AI_ENABLED') !== false,
+                'AI_ENABLED_value' => (getenv('AI_ENABLED') !== false) ? (string)getenv('AI_ENABLED') : null,
+                'GEMINI_API_KEY_present' => (string)getenv('GEMINI_API_KEY') !== '',
+                'GROQ_API_KEY_present' => (string)getenv('GROQ_API_KEY') !== '',
+            ],
             'ai_enabled' => (bool)($aiCfg['ai_enabled'] ?? false),
             'primary_provider' => (string)($aiCfg['ai_provider_primary'] ?? ''),
             'fallback_provider' => (string)($aiCfg['ai_provider_fallback'] ?? ''),

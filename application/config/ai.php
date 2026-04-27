@@ -7,7 +7,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Keep keys out of git. Prefer injecting via server env vars and reading with getenv().
 */
 
-$config['ai_enabled'] = (bool)(getenv('AI_ENABLED') ?: false);
+// Robust boolean parsing: supports true/false/1/0/yes/no/on/off.
+$aiEnabledRaw = getenv('AI_ENABLED');
+$aiEnabledParsed = filter_var($aiEnabledRaw, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+$config['ai_enabled'] = ($aiEnabledParsed === null) ? false : (bool)$aiEnabledParsed;
 
 // Providers: gemini | groq
 $config['ai_provider_primary'] = getenv('AI_PROVIDER_PRIMARY') ?: 'gemini';
