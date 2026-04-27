@@ -115,40 +115,7 @@ body {
     z-index: 1000;
 }
 
-/* PLUS BUTTON */
-.nav-plus {
-    flex: 0;
-    width: 64px;
-    display: flex;
-    justify-content: center;
-}
-
-.plus-btn {
-    width: 52px;
-    height: 52px;
-    background: #000;
-    color: #fff;
-    border: 2px solid #000;
-    box-shadow: 4px 4px 0px 0px #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(-16px); /* floating cantik */
-    transition: all 0.1s ease;
-}
-
-.plus-btn:hover {
-    transform: translateY(-18px);
-}
-
-.plus-btn:active {
-    transform: translateY(-12px);
-    box-shadow: 0px 0px 0px 0px #000;
-}
-
-.plus-btn .iconify {
-    font-size: 28px;
-}
+/* PLUS BUTTON (removed in favor of center CHAT nav item) */
 
 @media (max-width: 480px) {
     .mobile-nav {
