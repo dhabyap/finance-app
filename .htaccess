@@ -1,6 +1,17 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
+# Block sensitive files and directories
+<FilesMatch "^(\.env|\.env\..*|composer\.json|composer\.lock|README\.md)$">
+	Require all denied
+</FilesMatch>
+
+# Block .git directory
+RedirectMatch 404 ^/\.git
+
+# Disable directory listing
+Options -Indexes
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
