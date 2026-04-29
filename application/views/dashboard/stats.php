@@ -291,8 +291,8 @@ if (!empty($category_income)) {
                 if (<?= !empty($exp_totals) ? 'true' : 'false' ?>) {
                     createDonutChart(
                         'expenseChart',
-                        <?= json_encode($exp_labels) ?>,
-                        <?= json_encode($exp_totals) ?>,
+                        <?= json_encode($exp_labels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
+                        <?= json_encode($exp_totals, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
                         'expenseLoading'
                     );
                 } else {
@@ -304,8 +304,8 @@ if (!empty($category_income)) {
                 if (<?= !empty($inc_totals) ? 'true' : 'false' ?>) {
                     createDonutChart(
                         'incomeChart',
-                        <?= json_encode($inc_labels) ?>,
-                        <?= json_encode($inc_totals) ?>,
+                        <?= json_encode($inc_labels, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
+                        <?= json_encode($inc_totals, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
                         'incomeLoading'
                     );
                 } else {
@@ -316,9 +316,9 @@ if (!empty($category_income)) {
 
                 /* ================= TREND CHART ================= */
                 <?php if (!empty($monthly_summary) && count($monthly_summary) > 1): ?>
-                    const trendLabels = <?= json_encode(array_column($monthly_summary, 'month_year')) ?>;
-                    const trendIncome = <?= json_encode(array_column($monthly_summary, 'total_income')) ?>;
-                    const trendExpense = <?= json_encode(array_column($monthly_summary, 'total_expense')) ?>;
+                    const trendLabels = <?= json_encode(array_column($monthly_summary, 'month_year'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+                    const trendIncome = <?= json_encode(array_column($monthly_summary, 'total_income'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+                    const trendExpense = <?= json_encode(array_column($monthly_summary, 'total_expense'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
                     const trendCanvas = document.getElementById('trendChart');
                     if (trendCanvas) {
