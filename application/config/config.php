@@ -23,22 +23,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = getenv('BASE_URL') ?: '';
+$config['base_url'] = 'http://finance_app.test/';
 
-if (empty($config['base_url'])) {
-    $allowed_hosts = ['localhost', '127.0.0.1'];
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-
-    if ($host && in_array($host, $allowed_hosts, true)) {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-            || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $script = $_SERVER['SCRIPT_NAME'] ?? '';
-        $path = str_replace(basename($script), '', $script);
-        $config['base_url'] = $protocol . $host . $path;
-    } else {
-        $config['base_url'] = 'https://localhost/';
-    }
+if ($_SERVER['HTTP_HOST'] == 'localhost' || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false) {
+    $config['base_url'] = 'http://localhost/finance_app/';
 }
+
+// if (empty($config['base_url'])) {
+//     $allowed_hosts = ['localhost', '127.0.0.1'];
+//     $host = $_SERVER['HTTP_HOST'] ?? '';
+
+//     if ($host && in_array($host, $allowed_hosts, true)) {
+//         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+//             || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+//         $script = $_SERVER['SCRIPT_NAME'] ?? '';
+//         $path = str_replace(basename($script), '', $script);
+//         $config['base_url'] = $protocol . $host . $path;
+//     } else {
+//         $config['base_url'] = 'https://localhost/';
+//     }
+// }
 // $config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http");
 // $config['base_url'] .= "://".$_SERVER['HTTP_HOST']."/finance_app/";
 
