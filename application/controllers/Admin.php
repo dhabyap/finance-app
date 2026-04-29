@@ -57,11 +57,44 @@ class Admin extends CI_Controller
             $input_key = $this->input->post('secret_key');
             $actual_key = $this->config->item('admin_secret_key');
 
-            if ($input_key === $actual_key) {
+            $max_attempts = 5;
+            $lockout_seconds = 300;
+            $session_key = 'admin_login_attempts';
+            $lockout_key = 'admin_login_locked_until';
+
+            $failed_attempts = $this->session->userdata($session_key) ?: 0;
+            $locked_until = $this->session->userdata($lockout_key) ?: 0;
+
+            if ($locked_until > time()) {
+                $remaining = $locked_until - time();
+                $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">Too many failed attempts. Try again in ' . ceil($remaining / 60) . ' minute(s).</div>');
+                redirect('admin/login');
+                return;
+            }
+
+            if ($actual_key === '' || $actual_key === false) {
+                log_message('error', 'Admin secret key is not configured');
+                $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">System misconfiguration. Contact administrator.</div>');
+                redirect('dashboard');
+                return;
+            }
+
+            if (hash_equals($actual_key, $input_key)) {
+                $this->session->unset_userdata($session_key);
+                $this->session->unset_userdata($lockout_key);
                 $this->session->set_userdata('admin_authorized', true);
                 redirect('admin');
             } else {
-                $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">Invalid Secret Key!</div>');
+                $failed_attempts++;
+                $this->session->set_userdata($session_key, $failed_attempts);
+
+                if ($failed_attempts >= $max_attempts) {
+                    $this->session->set_userdata($lockout_key, time() + $lockout_seconds);
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">Too many failed attempts. Locked for 5 minutes.</div>');
+                } else {
+                    $remaining = $max_attempts - $failed_attempts;
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">Invalid Secret Key! ' . $remaining . ' attempt(s) remaining.</div>');
+                }
                 redirect('admin/login');
             }
         }
