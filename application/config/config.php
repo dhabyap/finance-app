@@ -550,4 +550,4 @@ $config['proxy_ips'] = '';
 | Used as an additional layer of security for the Admin Panel.
 |
 */
-$config['admin_secret_key'] = 'ADMIN123';
+$config['admin_secret_key'] = getenv('ADMIN_SECRET_KEY') ?: '';
