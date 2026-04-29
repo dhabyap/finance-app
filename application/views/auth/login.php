@@ -10,7 +10,7 @@
                 <?= $this->session->flashdata('message'); ?>
 
                 <form method="post" action="<?= base_url('auth/login'); ?>">
-                    <?= csrf_field() ?>
+                    <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                     <div class="mb-3">
                         <label for="username" class="form-label font-mono fw-bold">USERNAME</label>
                         <input type="text" class="form-control form-control-brutal" id="username" name="username"

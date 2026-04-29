@@ -39,7 +39,7 @@
     </div>
 
     <form action="<?= base_url('dashboard/delete/' . $transaction['id']) ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this transaction?');">
-        <?= csrf_field() ?>
+        <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
         <button type="submit" class="btn btn-brutal w-100 py-3 fw-bold bg-pastel-red text-black">
             DELETE TRANSACTION
         </button>

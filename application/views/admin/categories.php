@@ -79,7 +79,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="<?= base_url('admin/add_category') ?>" method="POST">
-                <?= csrf_field() ?>
+                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold small">CATEGORY NAME</label>
@@ -112,7 +112,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="editCategoryForm" action="" method="POST">
-                <?= csrf_field() ?>
+                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold small">CATEGORY NAME</label>
@@ -146,7 +146,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="deleteCategoryForm" action="" method="POST">
-                <?= csrf_field() ?>
+                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 <div class="modal-body p-4">
                     <p class="m-0">Are you sure you want to delete category "<span id="delete_cat_name_display"
                             class="fw-bold"></span>"? This action cannot be undone.</p>
