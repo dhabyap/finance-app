@@ -77,14 +77,24 @@ class Dashboard extends CI_Controller
     {
         $user_id = $this->session->userdata('user_id');
         $limit = 20;
-        $offset = $this->input->get('offset') ? $this->input->get('offset') : 0;
+        $offset = (int) $this->input->get('offset') ?: 0;
+        $offset = $offset < 0 ? 0 : $offset;
 
-        $month = $this->input->get('month');
-        $year = $this->input->get('year');
+        $month_input = $this->input->get('month');
+        $year_input = $this->input->get('year');
 
-        // If month is selected but year is not, default to current year to avoid mixing years
+        $month = $month_input ? (int) $month_input : null;
+        $year = $year_input ? (int) $year_input : null;
+
+        if ($month !== null && ($month < 1 || $month > 12)) {
+            $month = null;
+        }
+        if ($year !== null && ($year < 2000 || $year > 2100)) {
+            $year = null;
+        }
+
         if (!empty($month) && empty($year)) {
-            $year = date('Y');
+            $year = (int) date('Y');
         }
 
         $filter = [
@@ -210,8 +220,18 @@ class Dashboard extends CI_Controller
         $user_id = $this->session->userdata('user_id');
         $user = $this->User_model->get_user_by_id($user_id);
 
-        $month = $this->input->get('month') ? $this->input->get('month') : date('n');
-        $year = $this->input->get('year') ? $this->input->get('year') : date('Y');
+        $month_input = $this->input->get('month');
+        $year_input = $this->input->get('year');
+
+        $month = $month_input ? (int) $month_input : (int) date('n');
+        $year = $year_input ? (int) $year_input : (int) date('Y');
+
+        if ($month < 1 || $month > 12) {
+            $month = (int) date('n');
+        }
+        if ($year < 2000 || $year > 2100) {
+            $year = (int) date('Y');
+        }
 
         $filter = ['month' => $month, 'year' => $year];
 
