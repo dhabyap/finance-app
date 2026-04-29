@@ -121,7 +121,8 @@ class Auth extends CI_Controller
             $data = [
                 'name' => htmlspecialchars($this->input->post('name', true)),
                 'username' => htmlspecialchars($this->input->post('username', true)),
-                'password' => password_hash($password, PASSWORD_DEFAULT)
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => 'user'
             ];
 
             $this->User_model->register($data);
