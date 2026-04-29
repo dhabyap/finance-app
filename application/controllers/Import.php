@@ -25,13 +25,15 @@ class Import extends CI_Controller
 
     public function upload()
     {
-        $config['upload_path'] = './uploads/';
-        $config['allowed_types'] = 'csv|xls|xlsx';
+        $upload_path = dirname(APPPATH) . '/writable/uploads/';
+        $config['upload_path'] = $upload_path;
+        $config['allowed_types'] = 'csv';
         $config['max_size'] = 2048;
         $config['encrypt_name'] = TRUE;
+        $config['file_ext_tolower'] = TRUE;
 
-        if (!is_dir('./uploads/')) {
-            mkdir('./uploads/', 0777, TRUE);
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0755, TRUE);
         }
 
         $this->load->library('upload', $config);
@@ -46,9 +48,19 @@ class Import extends CI_Controller
             redirect('import');
         } else {
             $file_data = $this->upload->data();
-            $file_path = './uploads/' . $file_data['file_name'];
+            $file_path = $upload_path . $file_data['file_name'];
 
-            // Store file info in session to process in next step
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $finfo->file($file_path);
+            $allowed_mimes = ['text/csv', 'text/plain', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+            if (!in_array($mime_type, $allowed_mimes, true)) {
+                @unlink($file_path);
+                $this->session->set_flashdata('message', '<div class="alert alert-danger border-brutal" role="alert">Invalid file type.</div>');
+                redirect('import');
+                return;
+            }
+
             $this->session->set_userdata('import_file', $file_path);
 
             if ($this->input->is_ajax_request()) {
