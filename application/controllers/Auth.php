@@ -40,6 +40,7 @@ class Auth extends CI_Controller
 
             if ($user) {
                 if (password_verify($password, $user['password'])) {
+                    $this->session->sess_regenerate(true);
                     $this->session->set_userdata([
                         'user_id' => $user['id'],
                         'username' => $user['username'],
@@ -90,6 +91,9 @@ class Auth extends CI_Controller
         $this->session->unset_userdata('user_id');
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('name');
+        $this->session->unset_userdata('role');
+        $this->session->unset_userdata('admin_authorized');
+        $this->session->sess_destroy();
         $this->session->set_flashdata('message', '<div class="alert alert-success border-brutal bg-pastel-blue text-black" role="alert">You have been logged out!</div>');
         redirect('auth/login');
     }
