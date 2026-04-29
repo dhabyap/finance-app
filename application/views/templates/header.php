@@ -32,7 +32,7 @@
                         </a>
                     <?php endif; ?>
                     <span class="badge bg-pastel-yellow text-black border border-black rounded-0 fw-bold">
-                        <?= $this->session->userdata('name'); ?>
+                        <?= htmlspecialchars($this->session->userdata('name'), ENT_QUOTES, 'UTF-8'); ?>
                     </span>
                     <a href="<?= base_url('auth/logout') ?>" class="btn btn-sm border-0">
                         <span class="iconify" data-icon="lucide:log-out" style="width: 20px; height: 20px;"></span>
