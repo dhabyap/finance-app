@@ -79,6 +79,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="<?= base_url('admin/add_category') ?>" method="POST">
+                <?= csrf_field() ?>
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold small">CATEGORY NAME</label>
@@ -111,6 +112,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="editCategoryForm" action="" method="POST">
+                <?= csrf_field() ?>
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold small">CATEGORY NAME</label>
@@ -143,15 +145,18 @@
                 <h5 class="modal-title font-mono fw-bold text-uppercase">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
-                <p class="m-0">Are you sure you want to delete category "<span id="delete_cat_name_display"
-                        class="fw-bold"></span>"? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer border-top border-black">
-                <button type="button" class="btn btn-outline-dark border-brutal rounded-0 fw-bold"
-                    data-bs-dismiss="modal">CANCEL</button>
-                <a href="" id="confirmDeleteBtn" class="btn btn-danger border-brutal rounded-0 fw-bold">DELETE NOW</a>
-            </div>
+            <form id="deleteCategoryForm" action="" method="POST">
+                <?= csrf_field() ?>
+                <div class="modal-body p-4">
+                    <p class="m-0">Are you sure you want to delete category "<span id="delete_cat_name_display"
+                            class="fw-bold"></span>"? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-top border-black">
+                    <button type="button" class="btn btn-outline-dark border-brutal rounded-0 fw-bold"
+                        data-bs-dismiss="modal">CANCEL</button>
+                    <button type="submit" class="btn btn-danger border-brutal rounded-0 fw-bold">DELETE NOW</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -174,17 +179,7 @@
             const name = $(this).data('name');
 
             $('#delete_cat_name_display').text(name);
-            $('#confirmDeleteBtn').attr('href', '<?= base_url('admin/delete_category/') ?>' + id);
-        });
-
-        // Ensure clicking the confirmation link actually works with SWUP
-        $(document).on('click', '#confirmDeleteBtn', function (e) {
-            const href = $(this).attr('href');
-            if (href && href !== '') {
-                // If using SWUP, we might want to use its API, but window.location is safer for deletions
-                window.location.href = href;
-            }
-            e.preventDefault();
+            $('#deleteCategoryForm').attr('action', '<?= base_url('admin/delete_category/') ?>' + id);
         });
     });
 </script>

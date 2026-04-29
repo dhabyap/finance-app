@@ -38,9 +38,10 @@
         </div>
     </div>
 
-    <a href="<?= base_url('dashboard/delete/' . $transaction['id']) ?>"
-        class="btn btn-brutal w-100 py-3 fw-bold bg-pastel-red text-black"
-        onclick="return confirm('Are you sure you want to delete this transaction?')">
-        DELETE TRANSACTION
-    </a>
+    <form action="<?= base_url('dashboard/delete/' . $transaction['id']) ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this transaction?');">
+        <?= csrf_field() ?>
+        <button type="submit" class="btn btn-brutal w-100 py-3 fw-bold bg-pastel-red text-black">
+            DELETE TRANSACTION
+        </button>
+    </form>
 </div>

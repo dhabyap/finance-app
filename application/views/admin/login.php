@@ -7,6 +7,7 @@
             <p class="text-muted mb-4 text-center">Please enter your private admin key to proceed.</p>
 
             <form action="<?= base_url('admin/login') ?>" method="POST">
+                <?= csrf_field() ?>
                 <div class="mb-4">
                     <label class="form-label fw-bold">SECRET KEY</label>
                     <input type="password" name="secret_key" class="form-control border-brutal rounded-0 p-3"
