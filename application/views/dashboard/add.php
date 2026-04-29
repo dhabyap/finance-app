@@ -131,7 +131,7 @@
         });
 
         // Category Filtering Logic
-        const allCategories = <?= json_encode($categories) ?>;
+        const allCategories = <?= json_encode($categories, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         const $typeRadios = $('input[name="type"]');
         const $categorySelect = $('#categorySelect');
         const $categoryWrapper = $('#category-select-wrapper');
