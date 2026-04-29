@@ -190,6 +190,11 @@ class Dashboard extends CI_Controller
 
     public function delete($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Direct access not allowed', 403);
+            return;
+        }
+
         $transaction = $this->Transaction_model->get_transaction($id);
         if ($transaction && $transaction['user_id'] == $this->session->userdata('user_id')) {
             $this->Transaction_model->delete_transaction($id);

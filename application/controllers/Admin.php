@@ -127,6 +127,11 @@ class Admin extends CI_Controller
 
     public function delete_category($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Direct access not allowed', 403);
+            return;
+        }
+
         $this->db->where('id', $id);
         $this->db->delete('categories');
         $this->session->set_flashdata('message', '<div class="alert alert-success border-brutal bg-pastel-red text-black" role="alert">Category deleted!</div>');
