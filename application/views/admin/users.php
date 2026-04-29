@@ -22,9 +22,9 @@
                 foreach ($users as $user): ?>
                     <tr class="align-middle">
                         <td class="p-3 fw-bold"><?= $no ?></td>
-                        <td class="p-3"><?= $user['name'] ?></td>
+                        <td class="p-3"><?= htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td class="p-3"><span
-                                class="badge bg-pastel-blue text-black border border-black rounded-0"><?= $user['username'] ?></span>
+                                class="badge bg-pastel-blue text-black border border-black rounded-0"><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></span>
                         </td>
                         <td class="p-3">
                             <?php if ($user['role'] == 'admin'): ?>

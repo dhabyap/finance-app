@@ -29,7 +29,7 @@
                 foreach ($categories as $cat): ?>
                     <tr class="align-middle">
                         <td class="p-3 fw-bold"><?= $no ?></td>
-                        <td class="p-3"><?= $cat['name'] ?></td>
+                        <td class="p-3"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td class="p-3">
                             <?php if ($cat['type'] == 'income'): ?>
                                 <span

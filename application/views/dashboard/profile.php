@@ -15,8 +15,8 @@
             style="width: 80px; height: 80px;">
             <span class="iconify" data-icon="lucide:user" data-width="40"></span>
         </div>
-        <h4 class="fw-bold mb-1"><?= $user['name'] ?></h4>
-        <p class="font-mono text-muted mb-0">@<?= $user['username'] ?></p>
+        <h4 class="fw-bold mb-1"><?= htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8') ?></h4>
+        <p class="font-mono text-muted mb-0">@<?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></p>
     </div>
 
     <!-- Edit Profile Form -->

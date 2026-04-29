@@ -25,11 +25,11 @@
         <div class="border-top border-2 border-black pt-4">
             <div class="mb-3">
                 <small class="font-mono text-muted fw-bold">TITLE</small>
-                <h5 class="fw-bold mt-1"><?= $transaction['title'] ?></h5>
+                <h5 class="fw-bold mt-1"><?= htmlspecialchars($transaction['title'], ENT_QUOTES, 'UTF-8') ?></h5>
             </div>
             <div class="mb-3">
                 <small class="font-mono text-muted fw-bold">CATEGORY</small>
-                <h5 class="fw-bold mt-1"><?= $transaction['category'] ?></h5>
+                <h5 class="fw-bold mt-1"><?= htmlspecialchars($transaction['category'], ENT_QUOTES, 'UTF-8') ?></h5>
             </div>
             <div class="mb-3">
                 <small class="font-mono text-muted fw-bold">DATE</small>

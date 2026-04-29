@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($title) ? $title . ' | ' : '' ?> Admin Panel</title>
+    <title><?= isset($title) ? htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . ' | ' : '' ?> Admin Panel</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -210,7 +210,7 @@
                                 style="font-size: 0.65rem; line-height: 1;">ADMIN SESSION</small>
                             <span class="d-block fw-bold text-uppercase text-truncate font-mono"
                                 style="font-size: 0.85rem;">
-                                <?= $this->session->userdata('username'); ?>
+                                <?= htmlspecialchars($this->session->userdata('username'), ENT_QUOTES, 'UTF-8'); ?>
                             </span>
                         </div>
                     </div>
