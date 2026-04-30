@@ -394,3 +394,103 @@ html.is-animating .transition-fade {
 #loader-overlay.active {
     display: flex !important;
 }
+
+/* CSP-Compliant Classes - Replaces inline styles */
+
+/* Chat Messages */
+.chat-messages {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.chat-message-bubble {
+    max-width: 85%;
+}
+
+.chat-content-pre-wrap {
+    white-space: pre-wrap;
+}
+
+/* Progress Bars */
+.progress-15 {
+    height: 15px;
+    background: white;
+}
+
+.progress-30 {
+    height: 30px;
+    background: white;
+}
+
+.progress-40 {
+    height: 40px;
+}
+
+/* Icon Sizes */
+.icon-35x35 {
+    width: 35px;
+    height: 35px;
+}
+
+.icon-40x40 {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-80x80 {
+    width: 80px;
+    height: 80px;
+}
+
+/* Text Truncation */
+.text-truncate-150 {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Font Sizes */
+.font-xs-6 {
+    font-size: 0.7rem;
+}
+
+.font-xs-7 {
+    font-size: 0.8rem;
+}
+
+/* Border Dashed */
+.border-dashed {
+    border-style: dashed !important;
+}
+
+/* Canvas Charts */
+.chart-container-260 {
+    height: 260px;
+}
+
+.chart-container-200 {
+    height: 200px;
+}
+
+.canvas-hidden {
+    display: none;
+}
+
+/* Display Flex utility */
+.d-flex-important {
+    display: flex !important;
+}
+
+/* Pre-formatted text */
+.pre-wrap-scrollable {
+    white-space: pre-wrap;
+    max-height: 45vh;
+    overflow: auto;
+}
+
+/* Stats icon background */
+.stats-icon-bg {
+    width: 40px;
+    height: 40px;
+}
