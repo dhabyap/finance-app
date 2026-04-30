@@ -61,7 +61,7 @@ if (!empty($category_income)) {
         ?>
         <div class="card card-brutal p-4 mb-5 bg-pastel-yellow">
             <h6 class="font-mono fw-bold mb-3">PROGRESS TO FINANCIAL FREEDOM</h6>
-            <div class="progress border-brutal mb-2" style="height:30px; background: white;">
+            <div class="progress border-brutal mb-2 progress-30">
                 <div class="progress-bar bg-pastel-green text-black fw-bold" style="width:<?= $progress ?>%">
                     <?= round($progress, 1) ?>%
                 </div>
@@ -83,7 +83,7 @@ if (!empty($category_income)) {
         $exp_pct = $total > 0 ? ($total_expense / $total) * 100 : 0;
         ?>
 
-        <div class="progress border-brutal mb-3" style="height:40px">
+        <div class="progress border-brutal mb-3 progress-40">
             <div class="progress-bar bg-pastel-green text-black fw-bold" style="width:<?= $inc_pct ?>%">
                 <?= round($inc_pct) ?>%
             </div>
@@ -131,10 +131,9 @@ if (!empty($category_income)) {
     </div>
 
     <!-- ================= FREEDOM FORECAST ================= -->
-    <div class="card card-brutal p-4 mb-5 bg-white border-4" style="border-style: double !important;">
+    <div class="card card-brutal p-4 mb-5 bg-white border-4 border-dashed">
         <div class="d-flex align-items-center mb-3">
-            <div class="bg-black text-white p-2 me-3 d-flex align-items-center justify-content-center"
-                style="width:40px; height:40px;">
+                <div class="bg-black text-white p-2 me-3 d-flex align-items-center justify-content-center stats-icon-bg">
                 <span class="iconify" data-icon="lucide:arrow-up-right" data-width="24"></span>
             </div>
             <h6 class="font-mono fw-bold m-0">FREEDOM FORECAST</h6>
@@ -170,9 +169,9 @@ if (!empty($category_income)) {
                 <div id="expenseLoading" class="text-center py-3 font-mono">
                     <div class="spinner-border mb-2"></div><br>Loading...
                 </div>
-                <div style="height:260px">
-                    <canvas id="expenseChart" style="display:none;"></canvas>
-                    <div id="noExpenseData" class="text-center py-5 font-mono text-muted" style="display:none;">
+                <div class="chart-container-260">
+                    <canvas id="expenseChart" class="canvas-hidden"></canvas>
+                    <div id="noExpenseData" class="text-center py-5 font-mono text-muted canvas-hidden">
                         No expense data for this month.
                     </div>
                 </div>
@@ -186,9 +185,9 @@ if (!empty($category_income)) {
                 <div id="incomeLoading" class="text-center py-3 font-mono">
                     <div class="spinner-border mb-2"></div><br>Loading...
                 </div>
-                <div style="height:260px">
-                    <canvas id="incomeChart" style="display:none;"></canvas>
-                    <div id="noIncomeData" class="text-center py-5 font-mono text-muted" style="display:none;">
+                <div class="chart-container-260">
+                    <canvas id="incomeChart" class="canvas-hidden"></canvas>
+                    <div id="noIncomeData" class="text-center py-5 font-mono text-muted canvas-hidden">
                         No income data for this month.
                     </div>
                 </div>
@@ -203,8 +202,8 @@ if (!empty($category_income)) {
             <div id="trendLoading" class="text-center py-3 font-mono">
                 <div class="spinner-border mb-2"></div><br>Loading...
             </div>
-            <div style="height:200px">
-                <canvas id="trendChart" style="display:none;"></canvas>
+            <div class="chart-container-200">
+                <canvas id="trendChart" class="canvas-hidden"></canvas>
             </div>
         </div>
     <?php endif; ?>
