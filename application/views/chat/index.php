@@ -101,7 +101,10 @@
                 url: "<?= base_url('chat/send/' . (int)$thread['id']) ?>",
                 method: "POST",
                 dataType: "json",
-                data: { message: text },
+                data: {
+                    message: text,
+                    <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash() ?>"
+                },
                 success: function (res) {
                     if (res.status !== 'success') {
                         showError(res.message || 'Failed');
@@ -134,7 +137,8 @@
                     amount: draft.amount,
                     category: draft.category,
                     payee: draft.payee,
-                    transaction_date: draft.transaction_date
+                    transaction_date: draft.transaction_date,
+                    <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash() ?>"
                 },
                 success: function (res) {
                     if (res.status !== 'success') {
