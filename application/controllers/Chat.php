@@ -244,6 +244,27 @@ class Chat extends CI_Controller
         ];
         $this->Transaction_model->add_transaction($data);
 
+        // Mark the draft message as confirmed
+        $this->db->where('thread_id', $thread_id);
+        $this->db->where('role', 'assistant');
+        $this->db->order_by('id', 'DESC');
+        $messages = $this->db->get('chat_messages', 10)->result_array();
+
+        foreach ($messages as $msg) {
+            if (!empty($msg['meta_json'])) {
+                $meta = json_decode($msg['meta_json'], true);
+                if (is_array($meta) && ($meta['intent'] ?? '') === 'create_transaction' && !empty($meta['draft'])) {
+                    $draft = $meta['draft'];
+                    if (($draft['type'] ?? '') === $type && ($draft['title'] ?? '') === $title) {
+                        $meta['confirmed'] = true;
+                        $this->db->where('id', $msg['id']);
+                        $this->db->update('chat_messages', ['meta_json' => json_encode($meta)]);
+                        break;
+                    }
+                }
+            }
+        }
+
         $this->Chat_model->add_message($thread_id, 'assistant', 'Sip, transaksinya sudah disimpan.');
 
         echo json_encode(['status' => 'success', 'message' => 'Transaction saved']);
