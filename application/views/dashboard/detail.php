@@ -8,8 +8,7 @@
 
     <div class="card card-brutal p-4 mb-4">
         <div class="text-center mb-4">
-            <div class="rounded-circle border-2 border-black d-flex align-items-center justify-content-center mx-auto mb-3 bg-<?= $transaction['type'] == 'income' ? 'pastel-green' : 'pastel-red' ?>"
-                style="width: 80px; height: 80px;">
+            <div class="rounded-circle border-2 border-black d-flex align-items-center justify-content-center mx-auto mb-3 bg-<?= $transaction['type'] == 'income' ? 'pastel-green' : 'pastel-red' ?> icon-80x80">
                 <span class="iconify"
                     data-icon="<?= $transaction['type'] == 'income' ? 'lucide:arrow-down-left' : 'lucide:arrow-up-right' ?>"
                     data-width="40"></span>
