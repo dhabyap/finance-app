@@ -56,6 +56,58 @@
     </div>
 </div>
 
-</div>
+<script>
+    $(document).ready(function () {
+        // Handle button click to reset input and trigger picker
+        $('#btnChooseFile').on('click', function () {
+            $('#fileInput').val('').click();
+        });
 
-<script src="<?= base_url(assets/js/import-init.js) ?>"></script>
+        // Trigger upload on file selection
+        $('#fileInput').on('change', function () {
+            const file = this.files[0];
+            if (file) {
+                // Validate file size (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File is too large! Maximum size is 2MB.');
+                    $(this).val('');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // Show loader
+                $('#loader-overlay').addClass('active');
+
+                $.ajax({
+                    url: '<?= base_url('import/upload') ?>',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            window.location.href = response.redirect_url;
+                        } else {
+                            $('#loader-overlay').removeClass('active');
+                            // Show error alert
+                            const errorHtml = `<div class="alert alert-danger border-brutal alert-dismissible fade show" role="alert">
+                                ${response.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>`;
+                            $('.animate-up').prepend(errorHtml);
+                            $('#fileInput').val('');
+                        }
+                    },
+                    error: function () {
+                        $('#loader-overlay').removeClass('active');
+                        alert('Something went wrong during upload. Please try again.');
+                        $('#fileInput').val('');
+                    }
+                });
+            }
+        });
+    });
+</script>

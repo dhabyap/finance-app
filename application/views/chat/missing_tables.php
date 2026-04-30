@@ -19,7 +19,7 @@
         <div class="font-mono small mb-2"><b>Option A (recommended):</b> import `sql/ai_chat_tables.sql` into your `finance_app` database.</div>
         <div class="font-mono small mb-3"><b>Option B:</b> copy/paste the SQL below into your MySQL client.</div>
 
-        <pre class="border-brutal p-3 bg-light pre-wrap-scrollable"><code>CREATE TABLE IF NOT EXISTS `chat_threads` (
+        <pre class="border-brutal p-3 bg-light" style="white-space: pre-wrap; max-height: 45vh; overflow:auto;"><code>CREATE TABLE IF NOT EXISTS `chat_threads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

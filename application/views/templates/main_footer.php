@@ -51,7 +51,9 @@
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 <!-- Swup (Page Transitions) -->
-<script src="https://unpkg.com/swup@4"></script>
+<script src="https://unpkg.com/swup@4"
+        integrity="sha384-uhnasqDSrh2YgfIPWBe8VCLIyUBTjcVmqUR1nHVgfVTC08V56BICApRSxJhCoZf2"
+        crossorigin="anonymous"></script>
 <!-- Page Initialization Script -->
 <script src="<?= base_url('assets/js/page-init.js'); ?>"></script>
 </body>
