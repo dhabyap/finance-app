@@ -11,8 +11,7 @@
 
     <!-- Profile Info Card -->
     <div class="card card-brutal p-4 mb-4 text-center bg-pastel-yellow">
-        <div class="rounded-circle border-2 border-black d-flex align-items-center justify-content-center mx-auto mb-3 bg-white"
-            style="width: 80px; height: 80px;">
+        <div class="rounded-circle border-2 border-black d-flex align-items-center justify-content-center mx-auto mb-3 bg-white icon-80x80">
             <span class="iconify" data-icon="lucide:user" data-width="40"></span>
         </div>
         <h4 class="fw-bold mb-1"><?= htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8') ?></h4>

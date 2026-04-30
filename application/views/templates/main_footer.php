@@ -40,65 +40,22 @@
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/73Y1"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
 <!-- Iconify -->
 <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"
         integrity="sha384-GYcZF/Xz4/6ZHVch5eVcYcyWmSCvO3+ffsxF+B9hfRyc3XCkSws7SO5ZSGqHlUNH"
         crossorigin="anonymous"></script>
 <!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"
-        integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"
+        integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 <!-- Swup (Page Transitions) -->
 <script src="https://unpkg.com/swup@4"
-        integrity="sha384-yzkU2LzN4yZh/Abp/DRUsN1AanVM6aQ8FPHmTpWgu6mzZiXf7L7I3jAWZ00h7fys"
+        integrity="sha384-uhnasqDSrh2YgfIPWBe8VCLIyUBTjcVmqUR1nHVgfVTC08V56BICApRSxJhCoZf2"
         crossorigin="anonymous"></script>
-<!-- Iconify -->
-<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"
-        integrity="sha384-9e9K0z2Ql1M5fY2zq7K1FfyWd0qLz5v5r5Y5Q5Q5Q5Q5Q5Q5Q5Q5Q5"
-        crossorigin="anonymous"></script>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"
-        integrity="sha384-+zmW1TzXEXy9W3W7F5k5n5n5n5n5n5n5n5n5n5n5n5n5n5n5n5"
-        crossorigin="anonymous"></script>
-<!-- Swup (Page Transitions) -->
-<script src="https://unpkg.com/swup@4"
-        integrity="sha384-6nqK0k6ENv0hFklsD5YQ5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5"
-        crossorigin="anonymous"></script>
-<script>
-    const swup = new Swup();
-
-    // Run page initialization on first load as well (Swup hook only runs on transitions).
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof initPageScripts === 'function') {
-            initPageScripts();
-        }
-    });
-
-    // Re-initialize scripts after page transition
-    swup.hooks.on('content:replace', () => {
-        // Re-run Iconify icons scan
-        if (typeof Iconify !== 'undefined') {
-            Iconify.scan();
-        }
-
-        // Trigger page-specific initialization if defined
-        if (typeof initPageScripts === 'function') {
-            initPageScripts();
-        }
-    });
-
-    // Add logic to hide loader if it gets stuck
-    swup.hooks.on('visit:start', () => {
-        // Ensure some visual feedback that transition started if needed
-    });
-
-    swup.hooks.on('visit:end', () => {
-        // Cleanup or scroll
-        window.scrollTo(0, 0);
-    });
-</script>
+<!-- Page Initialization Script -->
+<script src="<?= base_url('assets/js/page-init.js'); ?>"></script>
 </body>
 
 </html>

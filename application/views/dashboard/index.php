@@ -20,7 +20,7 @@
                     <?= round($progress, 1) ?>%
                 </span>
             </div>
-            <div class="progress border-brutal mb-2" style="height: 15px; background: white;">
+            <div class="progress border-brutal mb-2 progress-15">
                 <div class="progress-bar bg-pastel-green" role="progressbar" style="width: <?= $progress ?>%"></div>
             </div>
             <div class="d-flex justify-content-between">
@@ -80,31 +80,31 @@
         <?php foreach ($recent_transactions as $t): ?>
             <a href="<?= base_url('dashboard/detail/' . $t['id']) ?>" class="text-decoration-none text-black">
                 <div class="card card-brutal mb-3 hover-lift transition-all">
-                    <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="bg-<?= $t['type'] == 'income' ? 'pastel-green' : 'pastel-red' ?> border border-black p-2 d-flex align-items-center justify-content-center"
-                                style="width: 40px; height: 40px;">
-                                <span class="iconify"
-                                    data-icon="<?= $t['type'] == 'income' ? 'lucide:arrow-down-left' : 'lucide:arrow-up-right' ?>"></span>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-truncate" style="max-width: 150px;"><?= $t['title'] ?></h6>
-                                <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted font-mono"
-                                        style="font-size: 0.7rem;"><?= date('d M Y', strtotime($t['transaction_date'])) ?></small>
-                                    <?php if ($t['payee']): ?>
-                                        <small class="bg-dark text-white font-mono px-1"
-                                            style="font-size: 0.6rem;"><?= strtoupper($t['payee']) ?></small>
-                                    <?php endif; ?>
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-3 flex-grow-1 me-2">
+                                <div class="bg-<?= $t['type'] == 'income' ? 'pastel-green' : 'pastel-red' ?> border border-black p-2 d-flex align-items-center justify-content-center icon-40x40 flex-shrink-0">
+                                    <span class="iconify"
+                                        data-icon="<?= $t['type'] == 'income' ? 'lucide:arrow-down-left' : 'lucide:arrow-up-right' ?>"></span>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h6 class="fw-bold mb-1 text-truncate"><?= $t['title'] ?></h6>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <small class="text-muted font-mono" style="font-size: 0.75rem;"><?= date('d M Y', strtotime($t['transaction_date'])) ?></small>
+                                        <?php if ($t['payee']): ?>
+                                            <small class="bg-dark text-white font-mono px-1 rounded-0" style="font-size: 0.65rem;"><?= strtoupper($t['payee']) ?></small>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="text-end flex-shrink-0">
+                                <h6 class="fw-bold mb-0 <?= $t['type'] == 'income' ? 'text-success' : 'text-danger' ?>" style="font-size: 0.9rem;">
+                                    <?= $t['type'] == 'income' ? '+' : '-' ?> <?= number_format($t['amount'], 0, ',', '.') ?>
+                                </h6>
+                            </div>
                         </div>
-                        <div class="text-end">
-                            <h6 class="fw-bold mb-0 <?= $t['type'] == 'income' ? 'text-success' : 'text-danger' ?>">
-                                <?= $t['type'] == 'income' ? '+' : '-' ?>         <?= number_format($t['amount'], 0, ',', '.') ?>
-                            </h6>
-                            <span class="badge rounded-0 border border-dark text-black bg-white font-mono"
-                                style="font-size: 0.6rem;"><?= strtoupper($t['category']) ?></span>
+                        <div>
+                            <span class="badge rounded-0 border border-dark text-black bg-white font-mono" style="font-size: 0.7rem;"><?= strtoupper($t['category']) ?></span>
                         </div>
                     </div>
                 </div>
