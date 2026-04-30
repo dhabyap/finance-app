@@ -54,39 +54,3 @@
                     <p class="font-mono small text-muted mb-0">Please wait while we crunch the numbers.</p>
                 </div>
             </div>
-
-            <style>
-                @keyframes bounce-custom {
-
-                    0%,
-                    100% {
-                        transform: translateY(0);
-                    }
-
-                    50% {
-                        transform: translateY(-10px);
-                    }
-                }
-
-                @keyframes spin-custom {
-                    from {
-                        transform: rotate(0deg);
-                    }
-
-                    to {
-                        transform: rotate(360deg);
-                    }
-                }
-
-                .animate-spin-custom {
-                    animation: spin-custom 1s linear infinite;
-                }
-
-                .animate-bounce-custom {
-                    animation: bounce-custom 1.5s infinite ease-in-out;
-                }
-
-                #loader-overlay.active {
-                    display: flex !important;
-                }
-            </style>
