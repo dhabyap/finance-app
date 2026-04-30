@@ -11,9 +11,7 @@
         integrity="sha384-GYcZF/Xz4/6ZHVch5eVcYcyWmSCvO3+ffsxF+B9hfRyc3XCkSws7SO5ZSGqHlUNH"
         crossorigin="anonymous"></script>
 <!-- Swup (Page Transitions) -->
-<script src="https://unpkg.com/swup@4"
-        integrity="sha384-uhnasqDSrh2YgfIPWBe8VCLIyUBTjcVmqUR1nHVgfVTC08V56BICApRSxJhCoZf2"
-        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/swup@4"></script>
 <!-- Admin Initialization Script -->
 <script src="<?= base_url('assets/js/admin-init.js'); ?>"></script>
 </body>

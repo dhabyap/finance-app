@@ -8,7 +8,7 @@
     </div>
 
     <div class="card card-brutal p-3">
-        <div id="chatMessages" style="max-height: 60vh; overflow:auto;">
+        <div id="chatMessages" class="chat-messages">
             <?php foreach ($messages as $m): ?>
                 <?php
                 $isUser = ($m['role'] === 'user');
@@ -19,9 +19,9 @@
                 ?>
                 <div class="mb-3 d-flex <?= $isUser ? 'justify-content-end' : 'justify-content-start' ?>">
                     <div class="p-3 border-brutal <?= $isUser ? 'bg-pastel-blue text-black' : 'bg-white' ?>"
-                        style="max-width: 85%;">
+                        class="chat-message-bubble">
                         <div class="font-mono small fw-bold mb-1"><?= $isUser ? 'YOU' : 'ASSISTANT' ?></div>
-                        <div class="font-mono" style="white-space: pre-wrap;"><?= htmlspecialchars($m['content']) ?></div>
+                        <div class="font-mono chat-content-pre-wrap"><?= htmlspecialchars($m['content']) ?></div>
 
                         <?php if (!$isUser && is_array($meta) && ($meta['intent'] ?? '') === 'create_transaction' && !empty($meta['draft'])): ?>
                             <?php $d = $meta['draft']; ?>
@@ -101,7 +101,10 @@
                 url: "<?= base_url('chat/send/' . (int)$thread['id']) ?>",
                 method: "POST",
                 dataType: "json",
-                data: { message: text },
+                data: {
+                    message: text,
+                    <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash() ?>"
+                },
                 success: function (res) {
                     if (res.status !== 'success') {
                         showError(res.message || 'Failed');
@@ -134,7 +137,8 @@
                     amount: draft.amount,
                     category: draft.category,
                     payee: draft.payee,
-                    transaction_date: draft.transaction_date
+                    transaction_date: draft.transaction_date,
+                    <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash() ?>"
                 },
                 success: function (res) {
                     if (res.status !== 'success') {
