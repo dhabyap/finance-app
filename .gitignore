@@ -33,3 +33,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 # Local environment (do not commit secrets)
 .env
+writable/session_data/

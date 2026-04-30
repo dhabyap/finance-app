@@ -26,7 +26,11 @@
                         <?php if (!$isUser && is_array($meta) && ($meta['intent'] ?? '') === 'create_transaction' && !empty($meta['draft'])): ?>
                             <?php $d = $meta['draft']; ?>
                             <div class="mt-3 p-3 border-brutal bg-pastel-yellow">
-                                <div class="font-mono fw-bold mb-2">DRAFT</div>
+                                <?php if (!empty($meta['confirmed'])): ?>
+                                    <div class="font-mono fw-bold mb-2">✓ SAVED</div>
+                                <?php else: ?>
+                                    <div class="font-mono fw-bold mb-2">DRAFT</div>
+                                <?php endif; ?>
                                 <div class="font-mono small">Type: <b><?= htmlspecialchars($d['type']) ?></b></div>
                                 <div class="font-mono small">Amount: <b>Rp <?= number_format((int)$d['amount'], 0, ',', '.') ?></b></div>
                                 <div class="font-mono small">Date: <b><?= htmlspecialchars($d['transaction_date']) ?></b></div>
@@ -34,6 +38,7 @@
                                 <div class="font-mono small">Title: <b><?= htmlspecialchars($d['title']) ?></b></div>
                                 <div class="font-mono small">Payee: <b><?= htmlspecialchars($d['payee']) ?></b></div>
 
+                                <?php if (empty($meta['confirmed'])): ?>
                                 <div class="d-flex gap-2 mt-3">
                                     <button type="button"
                                         class="btn btn-sm btn-brutal bg-white font-mono fw-bold btn-confirm-draft"
@@ -45,6 +50,7 @@
                                         EDIT
                                     </a>
                                 </div>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -145,7 +151,14 @@
                         showError(res.message || 'Failed');
                         return;
                     }
-                    window.location.reload();
+                    // Update UI without reload
+                    const $btn = $('.btn-confirm-draft').filter(function () {
+                        const d = JSON.parse($(this).attr('data-draft') || '{}');
+                        return d.type === draft.type && d.title === draft.title;
+                    });
+                    const $container = $btn.closest('.bg-pastel-yellow');
+                    $container.find('.font-mono.fw-bold.mb-2').text('✓ SAVED');
+                    $container.find('.d-flex.gap-2').remove();
                 },
                 error: function (xhr) {
                     showError(xhr.responseText || 'Error');
