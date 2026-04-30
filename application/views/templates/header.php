@@ -25,8 +25,7 @@
 <body class="bg-gray-50">
     <div class="app-container shadow-brutal-lg">
         <!-- Top Bar -->
-        <nav class="navbar navbar-light bg-white border-bottom border-black border-2 px-3 sticky-top"
-            style="z-index: 1020;">
+        <nav class="navbar navbar-light bg-white border-bottom border-black border-2 px-3 sticky-top navbar-sticky">
             <div class="container-fluid p-0 d-flex justify-content-between align-items-center">
                 <span class="navbar-brand mb-0 h1 fw-bold font-mono text-uppercase tracking-wider">My Wallet</span>
                 <div class="d-flex align-items-center gap-2">
@@ -40,7 +39,7 @@
                         <?= htmlspecialchars($this->session->userdata('name'), ENT_QUOTES, 'UTF-8'); ?>
                     </span>
                     <a href="<?= base_url('auth/logout') ?>" class="btn btn-sm border-0">
-                        <span class="iconify" data-icon="lucide:log-out" style="width: 20px; height: 20px;"></span>
+                        <span class="iconify icon-logout" data-icon="lucide:log-out"></span>
                     </a>
                 </div>
             </div>
@@ -48,8 +47,7 @@
         <div id="swup" class="content p-3 pb-5 mb-5 transition-fade">
 
             <!-- Loader Overlay -->
-            <div id="loader-overlay"
-                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+            <div id="loader-overlay" class="loader-overlay">
                 <div class="card card-brutal p-4 bg-pastel-yellow text-center animate-bounce-custom">
                     <span class="iconify mb-3 animate-spin-custom" data-icon="lucide:loader-2" data-width="48"></span>
                     <h4 class="font-mono fw-bold">PROCESSING DATA...</h4>

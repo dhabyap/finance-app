@@ -211,10 +211,8 @@
                             <span class="iconify" data-icon="lucide:user" data-width="20"></span>
                         </div>
                         <div class="overflow-hidden">
-                            <small class="d-block text-muted fw-bold font-mono"
-                                style="font-size: 0.65rem; line-height: 1;">ADMIN SESSION</small>
-                            <span class="d-block fw-bold text-uppercase text-truncate font-mono"
-                                style="font-size: 0.85rem;">
+                            <small class="d-block text-muted fw-bold font-mono admin-session-label">ADMIN SESSION</small>
+                            <span class="d-block fw-bold text-uppercase text-truncate font-mono admin-session-username">
                                 <?= htmlspecialchars($this->session->userdata('username'), ENT_QUOTES, 'UTF-8'); ?>
                             </span>
                         </div>
