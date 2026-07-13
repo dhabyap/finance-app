@@ -3,12 +3,6 @@
 
 const swup = new Swup();
 
-swup.hooks.on('content:replace', () => {
-    if (typeof Iconify !== 'undefined') {
-        Iconify.scan();
-    }
-});
-
 function closeSidebar() {
     $('#adminSidebar').removeClass('show-mobile');
     $('#sidebarOverlay').removeClass('show');
@@ -31,9 +25,6 @@ $(document).on('click', '#sidebarOverlay', function () {
 });
 
 swup.hooks.on('content:replace', () => {
-    if (typeof Iconify !== 'undefined') {
-        Iconify.scan();
-    }
     if ($(window).width() <= 992) {
         closeSidebar();
     }

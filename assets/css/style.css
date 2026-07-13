@@ -275,7 +275,7 @@ body {
     background: #fef9c3 !important;
 }
 
-.admin-nav-item .iconify {
+.admin-nav-item svg {
     margin-right: 1rem !important;
     width: 22px !important;
     height: 22px !important;

@@ -79,7 +79,9 @@
         const $error = $('#chatError');
 
         function scrollBottom() {
-            $messages.scrollTop($messages[0].scrollHeight);
+            if ($messages.length) {
+                $messages.scrollTop($messages[0].scrollHeight);
+            }
         }
 
         scrollBottom();

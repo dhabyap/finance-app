@@ -12,11 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Re-initialize scripts after page transition
 swup.hooks.on('content:replace', () => {
-    // Re-run Iconify icons scan
-    if (typeof Iconify !== 'undefined') {
-        Iconify.scan();
-    }
-
     // Trigger page-specific initialization if defined
     if (typeof initPageScripts === 'function') {
         initPageScripts();

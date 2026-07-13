@@ -7,9 +7,7 @@
     <title>My Wallet</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-          crossorigin="anonymous">
+          rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css'); ?>">
     <!-- Google Fonts -->
@@ -39,7 +37,7 @@
                         <?= htmlspecialchars($this->session->userdata('name'), ENT_QUOTES, 'UTF-8'); ?>
                     </span>
                     <a href="<?= base_url('auth/logout') ?>" class="btn btn-sm border-0">
-                        <span class="iconify icon-logout" data-icon="lucide:log-out"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-logout"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     </a>
                 </div>
             </div>
@@ -49,7 +47,7 @@
             <!-- Loader Overlay -->
             <div id="loader-overlay" class="loader-overlay">
                 <div class="card card-brutal p-4 bg-pastel-yellow text-center animate-bounce-custom">
-                    <span class="iconify mb-3 animate-spin-custom" data-icon="lucide:loader-2" data-width="48"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-3 animate-spin-custom"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                     <h4 class="font-mono fw-bold">PROCESSING DATA...</h4>
                     <p class="font-mono small text-muted mb-0">Please wait while we crunch the numbers.</p>
                 </div>
